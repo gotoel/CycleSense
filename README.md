@@ -1,2 +1,2 @@
 # CycleSense
-Virtual game input device that gives the use control via their stationary bike.
+Virtual game input device that gives the user control via their stationary bike.

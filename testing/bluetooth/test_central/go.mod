@@ -3,6 +3,7 @@ module cycleSenseCentral
 go 1.19
 
 require (
+	github.com/WesleiRamos/goxinput v0.0.0-20190612161108-862345996ed8 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/godbus/dbus/v5 v5.0.3 // indirect

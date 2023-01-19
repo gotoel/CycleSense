@@ -15,6 +15,8 @@ type BikeStats struct {
 var adapter = bluetooth.DefaultAdapter
 var Bike BikeStats
 
+var senseController SenseController
+
 const (
 	CS_DEVICE_ADDR = "34:94:54:27:6A:BE"
 
@@ -24,6 +26,9 @@ const (
 
 func main() {
 	go runWebserver()
+
+	senseController = NewSenseController()
+	senseController.Initialize()
 
 	// Enable BLE interface.
 	must("enable BLE stack", adapter.Enable())
@@ -84,6 +89,7 @@ func main() {
 		bits := binary.LittleEndian.Uint32(buf)
 		float := math.Float32frombits(bits)
 		Bike.RPM = float
+		senseController.SetAxis(Bike.RPM)
 		println(fmt.Sprintf("RPMs: %.2f", float))
 	})
 

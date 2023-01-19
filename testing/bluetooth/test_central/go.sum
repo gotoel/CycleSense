@@ -1,4 +1,6 @@
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/WesleiRamos/goxinput v0.0.0-20190612161108-862345996ed8 h1:q3VPdVXYhZGa8W+Y2VntEgf1RPbJeJNhClYUeP2xlUk=
+github.com/WesleiRamos/goxinput v0.0.0-20190612161108-862345996ed8/go.mod h1:im05K6FHImRYK9Onu9DsK9scaqnI2wqCxRrpNwMR9qg=
 github.com/bgould/http v0.0.0-20190627042742-d268792bdee7/go.mod h1:BTqvVegvwifopl4KTEDth6Zezs9eR+lCWhvGKvkxJHE=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

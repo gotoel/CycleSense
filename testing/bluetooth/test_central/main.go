@@ -8,16 +8,23 @@ import (
 	"tinygo.org/x/bluetooth"
 )
 
+type BikeStats struct {
+	RPM float32
+}
+
 var adapter = bluetooth.DefaultAdapter
+var Bike BikeStats
 
 const (
 	CS_DEVICE_ADDR = "34:94:54:27:6A:BE"
 
-	JOB_SERVICE_UUID = 0x1337
-	RPM_UUID         = 0x1338
+	JOB_SERVICE_UUID = "97bb6403-1337-4a42-8563-243ed61234c7"
+	RPM_UUID         = "97bb6403-1338-4a42-8563-243ed61234c7"
 )
 
 func main() {
+	go runWebserver()
+
 	// Enable BLE interface.
 	must("enable BLE stack", adapter.Enable())
 
@@ -30,7 +37,6 @@ func main() {
 			now := time.Now()
 			println(now.Format(time.Stamp), " - found device:", result.Address.String(), result.RSSI, result.LocalName())
 			adapter.StopScan()
-
 			ch <- result
 		}
 	})
@@ -49,7 +55,8 @@ func main() {
 
 	// get services
 	println("discovering services/characteristics")
-	srvcs, err := device.DiscoverServices([]bluetooth.UUID{bluetooth.New16BitUUID(JOB_SERVICE_UUID)})
+	uuid, _ := bluetooth.ParseUUID(JOB_SERVICE_UUID)
+	srvcs, err := device.DiscoverServices([]bluetooth.UUID{uuid})
 	must("discover services", err)
 
 	if len(srvcs) == 0 {
@@ -60,7 +67,8 @@ func main() {
 
 	println("found service", srvc.UUID().String())
 
-	chars, err := srvc.DiscoverCharacteristics([]bluetooth.UUID{bluetooth.New16BitUUID(RPM_UUID)})
+	uuid, _ = bluetooth.ParseUUID(RPM_UUID)
+	chars, err := srvc.DiscoverCharacteristics([]bluetooth.UUID{uuid})
 	if err != nil {
 		println(err)
 	}
@@ -75,6 +83,7 @@ func main() {
 	char.EnableNotifications(func(buf []byte) {
 		bits := binary.LittleEndian.Uint32(buf)
 		float := math.Float32frombits(bits)
+		Bike.RPM = float
 		println(fmt.Sprintf("RPMs: %.2f", float))
 	})
 

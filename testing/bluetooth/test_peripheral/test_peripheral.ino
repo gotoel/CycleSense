@@ -4,7 +4,7 @@ char TITLE[] = "CycleSense";
 int BAUD_SPEED = 9600;
 
 int HALL_PIN = 2;
-float REV_THRESHOLD = 2.0; // # of rotations before updating RPM
+float REV_THRESHOLD = 1.0; // # of rotations before updating RPM
 
 BLEService bikeService("97bb6403-1337-4a42-8563-243ed61234c7"); // BLE LED Service
 BLEFloatCharacteristic bikeRPM("97bb6403-1338-4a42-8563-243ed61234c7", BLERead | BLENotify);
@@ -36,7 +36,8 @@ void setup() {
 }
 
 void loop() {
-  BLE.poll(); // do we need this?
+  // Handles bluetooth events
+  BLE.poll();
 
   processSensor();
 }
@@ -51,7 +52,6 @@ void processSensor() {
   if (rev >= REV_THRESHOLD) {
     detachInterrupt(HALL_PIN);
     rpm = 60000.0/(millis()-timeold)*rev;
-    rps = rpm/60.0;
     timeold = millis();
     rev = 0;
     
@@ -62,7 +62,7 @@ void processSensor() {
     attachInterrupt(digitalPinToInterrupt(HALL_PIN),revCounterInterrupt,RISING);
     
     // COMMENT DELAY FOR PRODUCTION
-    delay(1);
+    //delay(1);
   } else if(rpm > 0 && time_passed > 10000) {
     rpm -= 0.1;
     bikeRPM.writeValue(rpm);    

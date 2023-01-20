@@ -4,11 +4,14 @@ import (
 	"encoding/binary"
 	"fmt"
 	"math"
+	"sync"
 	"time"
 	"tinygo.org/x/bluetooth"
 )
 
 type BikeStats struct {
+	sync.Mutex
+
 	RPM float32
 }
 
@@ -88,8 +91,18 @@ func main() {
 	char.EnableNotifications(func(buf []byte) {
 		bits := binary.LittleEndian.Uint32(buf)
 		float := math.Float32frombits(bits)
+
+		Bike.Lock()
 		Bike.RPM = float
+		Bike.Unlock()
+
 		senseController.SetAxis(Bike.RPM)
+		//const DEAD_ZONE = 30
+		//if Bike.RPM > DEAD_ZONE {
+		//	senseController.PressHotkey()
+		//} else {
+		//	senseController.ReleaseHotkey()
+		//}
 		println(fmt.Sprintf("RPMs: %.2f", float))
 	})
 

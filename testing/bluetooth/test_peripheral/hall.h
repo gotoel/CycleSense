@@ -13,7 +13,6 @@ class Hall {
     void initialize();
     void process(); 
   private:
-    float rps;
     float rpm;
     unsigned long timeold;
     unsigned long timedecay;

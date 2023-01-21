@@ -31,13 +31,13 @@ var opts = {
     staticLabels: {
         font: "10px sans-serif",  // Specifies font
         labels: [40, 300],  // Print labels at these values
-        color: "#000000",  // Optional: Label text color
+        color: "#ff580c",  // Optional: Label text color
         fractionDigits: 0  // Optional: Numerical precision. 0=round off.
     },
 };
 var target = document.getElementById('gauge'); // your canvas element
 var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-gauge.setTextField(document.getElementById("value"), 2);
+gauge.setTextField(document.getElementById("value"), 0); // second parameter is decimal points
 gauge.maxValue = 300; // set max gauge value
 gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
 gauge.animationSpeed = 32; // set animation speed (32 is default value)
@@ -46,7 +46,7 @@ gauge.set(0); // set actual value
 function updateCounter() {
     fetch("/rpm").then(response => response.text()).then(RPM => {
         console.log(RPM);
-        gauge.set(parseFloat(RPM));
+        gauge.set(parseInt(RPM));
     });
 }
 setInterval(updateCounter, 300);

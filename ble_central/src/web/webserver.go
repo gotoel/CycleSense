@@ -2,7 +2,7 @@ package web
 
 import (
 	"cycleSenseCentral/src/sensors"
-	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -13,5 +13,5 @@ func RunWebserver() {
 }
 
 func rpm(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(sensors.Manager.Bike.RPM)
+	fmt.Fprint(w, sensors.Manager.Bike.RPM)
 }

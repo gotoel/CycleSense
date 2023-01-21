@@ -7,7 +7,7 @@ import (
 )
 
 func RunWebserver() {
-	http.Handle("/", http.FileServer(http.Dir("./web")))
+	http.Handle("/", http.FileServer(http.Dir("./src/web/gauges")))
 	http.HandleFunc("/rpm", rpm)
 	http.ListenAndServe(":3000", nil)
 }

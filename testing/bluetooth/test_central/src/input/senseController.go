@@ -1,17 +1,28 @@
-package main
+package input
 
 import (
 	"github.com/WesleiRamos/goxinput"
 	"github.com/micmonay/keybd_event"
+	"sync"
 )
+
+var once sync.Once
 
 type SenseController struct {
 	controller *goxinput.VirtualController
 	kb         keybd_event.KeyBonding
 }
 
-func NewSenseController() (senseController SenseController) {
-	return
+var (
+	Input *SenseController
+)
+
+func NewSenseController() *SenseController {
+	once.Do(func() {
+		Input = &SenseController{}
+	})
+
+	return Input
 }
 
 func (senseController *SenseController) Initialize() {

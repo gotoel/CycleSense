@@ -1,116 +1,37 @@
 package main
 
 import (
-	"encoding/binary"
-	"fmt"
-	"math"
-	"sync"
-	"time"
-	"tinygo.org/x/bluetooth"
+	"cycleSenseCentral/src"
+	"cycleSenseCentral/src/ble"
+	"cycleSenseCentral/src/input"
+	"cycleSenseCentral/src/sensors"
+	"cycleSenseCentral/src/web"
 )
 
-type BikeStats struct {
-	sync.Mutex
-
-	RPM float32
-}
-
-var adapter = bluetooth.DefaultAdapter
-var Bike BikeStats
-
-var senseController SenseController
-
-const (
-	CS_DEVICE_ADDR = "34:94:54:27:6A:BE"
-
-	JOB_SERVICE_UUID = "97bb6403-1337-4a42-8563-243ed61234c7"
-	RPM_UUID         = "97bb6403-1338-4a42-8563-243ed61234c7"
-)
+var senseController input.SenseController
 
 func main() {
-	go runWebserver()
+	go web.RunWebserver()
 
-	senseController = NewSenseController()
-	senseController.Initialize()
+	// Initialize CycleSense virtual controller
+	input.NewSenseController()
+	input.Input.Initialize()
 
-	// Enable BLE interface.
-	must("enable BLE stack", adapter.Enable())
+	// Initialize Sensor Manager singleton
+	sensors.NewSensorManager()
 
-	ch := make(chan bluetooth.ScanResult, 1)
-
-	// Start scanning.
-	println("scanning...")
-	err := adapter.Scan(func(adapter *bluetooth.Adapter, result bluetooth.ScanResult) {
-		if result.Address.String() == CS_DEVICE_ADDR {
-			now := time.Now()
-			println(now.Format(time.Stamp), " - found device:", result.Address.String(), result.RSSI, result.LocalName())
-			adapter.StopScan()
-			ch <- result
-		}
+	// All used services/characteristics need to be
+	// added here for subscriptions.
+	ble.NewBLEHandler(src.CS_DEVICE_ADDR, []ble.BLESubscription{
+		sensors.Manager.Bike.GetBLESubscription(),
+		sensors.Manager.Chuck.GetBLESubscription(),
 	})
 
-	var device *bluetooth.Device
-	select {
-	case result := <-ch:
-		device, err = adapter.Connect(result.Address, bluetooth.ConnectionParams{})
-		if err != nil {
-			println(err.Error())
-			return
-		}
+	// Initialize BLE and subscribe to requested services/characteristics
+	ble.BLE.InitializeBluetooth()
 
-		println("connected to ", result.Address.String())
-	}
-
-	// get services
-	println("discovering services/characteristics")
-	uuid, _ := bluetooth.ParseUUID(JOB_SERVICE_UUID)
-	srvcs, err := device.DiscoverServices([]bluetooth.UUID{uuid})
-	must("discover services", err)
-
-	if len(srvcs) == 0 {
-		panic("could not find heart rate service")
-	}
-
-	srvc := srvcs[0]
-
-	println("found service", srvc.UUID().String())
-
-	uuid, _ = bluetooth.ParseUUID(RPM_UUID)
-	chars, err := srvc.DiscoverCharacteristics([]bluetooth.UUID{uuid})
-	if err != nil {
-		println(err)
-	}
-
-	if len(chars) == 0 {
-		panic("could not find heart rate characteristic")
-	}
-
-	char := chars[0]
-	println("found characteristic", char.UUID().String())
-
-	char.EnableNotifications(func(buf []byte) {
-		bits := binary.LittleEndian.Uint32(buf)
-		float := math.Float32frombits(bits)
-
-		Bike.Lock()
-		Bike.RPM = float
-		Bike.Unlock()
-
-		senseController.SetAxis(Bike.RPM)
-		//const DEAD_ZONE = 30
-		//if Bike.RPM > DEAD_ZONE {
-		//	senseController.PressHotkey()
-		//} else {
-		//	senseController.ReleaseHotkey()
-		//}
-		println(fmt.Sprintf("RPMs: %.2f", float))
-	})
+	// Sensors set BLE handlers, do this after initializing BLE
+	sensors.Manager.InitializeSensors()
 
 	select {}
-}
-
-func must(action string, err error) {
-	if err != nil {
-		panic("failed to " + action + ": " + err.Error())
-	}
 }

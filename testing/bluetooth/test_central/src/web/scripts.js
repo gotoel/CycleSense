@@ -10,7 +10,7 @@ var opts = {
     limitMax: false,     // If false, max value increases automatically if value > maxValue
     limitMin: false,     // If true, the min value of the gauge will be fixed
     colorStart: '#6FADCF',   // Colors
-    colorStop: '#8FC0DA',    // just experiment with them
+    colorStop: '#6eb2d3',    // just experiment with them
     strokeColor: '#E0E0E0',  // to see which ones work best for you
     generateGradient: true,
     highDpiSupport: true,     // High resolution support
@@ -25,10 +25,9 @@ gauge.animationSpeed = 32; // set animation speed (32 is default value)
 gauge.set(0); // set actual value
 
 function updateCounter() {
-    fetch("/rpm").then(response => response.text()).then(Bike => {
-        bikeStats = JSON.parse(Bike)
-        console.log(bikeStats);
-        gauge.set(bikeStats.RPM);
+    fetch("/rpm").then(response => response.text()).then(RPM => {
+        console.log(RPM);
+        gauge.set(parseFloat(RPM));
     });
 }
 setInterval(updateCounter, 300);

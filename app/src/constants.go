@@ -8,6 +8,6 @@ type DeviceConnectionType int64
 
 const (
 	Bluetooth DeviceConnectionType = 0
-	WiFi                           = 1
-	USB                            = 2
+	WiFi      DeviceConnectionType = 1
+	USB       DeviceConnectionType = 2
 )

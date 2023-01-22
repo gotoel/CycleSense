@@ -15,7 +15,7 @@ type BLESubscription struct {
 	CharacteristicUUIDs []string
 }
 
-type BLEHandler struct {
+type Handler struct {
 	peripheralMAC string
 
 	device *bluetooth.Device
@@ -26,13 +26,13 @@ type BLEHandler struct {
 }
 
 var (
-	BLE     *BLEHandler
+	BLE     *Handler
 	adapter = bluetooth.DefaultAdapter
 )
 
-func NewBLEHandler(peripheralMAC string, subscriptions []BLESubscription) *BLEHandler {
+func NewBLEHandler(peripheralMAC string, subscriptions []BLESubscription) *Handler {
 	once.Do(func() {
-		BLE = &BLEHandler{
+		BLE = &Handler{
 			peripheralMAC: peripheralMAC,
 			subscriptions: subscriptions,
 
@@ -44,7 +44,7 @@ func NewBLEHandler(peripheralMAC string, subscriptions []BLESubscription) *BLEHa
 	return BLE
 }
 
-func (ble BLEHandler) InitializeBluetooth() {
+func (ble Handler) InitializeBluetooth() {
 	// Enable BLE interface.
 	must("enable BLE stack", adapter.Enable())
 
@@ -75,12 +75,12 @@ func (ble BLEHandler) InitializeBluetooth() {
 	ble.discoverSubscriptions(ble.subscriptions)
 }
 
-func (ble BLEHandler) strToUuid(uuidStr string) (uuid bluetooth.UUID, err error) {
+func (ble Handler) strToUuid(uuidStr string) (uuid bluetooth.UUID, err error) {
 	uuid, err = bluetooth.ParseUUID(uuidStr)
 	return
 }
 
-func (ble BLEHandler) strToUuidSlice(uuidStr []string) (uuids []bluetooth.UUID) {
+func (ble Handler) strToUuidSlice(uuidStr []string) (uuids []bluetooth.UUID) {
 	for _, str := range uuidStr {
 		uuid, err := ble.strToUuid(str)
 		if err != nil {
@@ -92,7 +92,7 @@ func (ble BLEHandler) strToUuidSlice(uuidStr []string) (uuids []bluetooth.UUID) 
 	return
 }
 
-func (ble BLEHandler) discoverSubscriptions(subscriptions []BLESubscription) {
+func (ble Handler) discoverSubscriptions(subscriptions []BLESubscription) {
 	// Pull out service IDs and discover services first
 	var serviceIds []string
 	for _, subscription := range subscriptions {
@@ -110,7 +110,7 @@ func (ble BLEHandler) discoverSubscriptions(subscriptions []BLESubscription) {
 	}
 }
 
-func (ble BLEHandler) discoverServices(serviceUuids []string) {
+func (ble Handler) discoverServices(serviceUuids []string) {
 	services, err := ble.device.DiscoverServices(ble.strToUuidSlice(serviceUuids))
 	must("discover services", err)
 
@@ -121,7 +121,7 @@ func (ble BLEHandler) discoverServices(serviceUuids []string) {
 	println(fmt.Sprintf("collected %d/%d requested services.", len(ble.serviceMap), len(serviceUuids)))
 }
 
-func (ble BLEHandler) discoverCharacteristics(serviceUuid string, characteristicUuids []string) {
+func (ble Handler) discoverCharacteristics(serviceUuid string, characteristicUuids []string) {
 	if service, ok := ble.serviceMap[serviceUuid]; ok {
 		chars, err := service.DiscoverCharacteristics(ble.strToUuidSlice(characteristicUuids))
 		if err != nil {
@@ -139,7 +139,7 @@ func (ble BLEHandler) discoverCharacteristics(serviceUuid string, characteristic
 	}
 }
 
-func (ble BLEHandler) SetNotificationHandler(characteristicUuid string, callback func(buf []byte)) {
+func (ble Handler) SetNotificationHandler(characteristicUuid string, callback func(buf []byte)) {
 	ble.charMap[characteristicUuid].EnableNotifications(callback)
 }
 

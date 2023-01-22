@@ -3,27 +3,10 @@
 #include "bt.h"
 #include "constants.h"
 
-// Bluetooth
-BLEService bikeService("97bb6403-1337-4a42-8563-243ed61234c7");
-BLEFloatCharacteristic bikeRPM("97bb6403-1338-4a42-8563-243ed61234c7", BLERead | BLENotify);
-
 int rev;
 
 void Bike::initialize() {
   attachInterrupt(digitalPinToInterrupt(BIKE_PIN),revCounterInterrupt,RISING);
-  setupConnections();
-}
-
-void Bike::setupConnections() {
-  switch(CONNECTION_TYPE) {
-    case BLUETOOTH:
-      bikeService.addCharacteristic(bikeRPM);
-      bikeRPM.writeValue(0);
-
-      BLE.setAdvertisedService(bikeService);
-      BLE.addService(bikeService);
-      break;
-  }
 }
 
 void Bike::process() {
@@ -47,6 +30,8 @@ void Bike::process() {
     
     this->data.rpm = averageRPM;
 
+    BTProcessBike(this->data);
+
     attachInterrupt(digitalPinToInterrupt(BIKE_PIN),this->revCounterInterrupt,RISING);
   } else if(this->zerod < NUM_SAMPLES && time_passed > DECAY_START_INTERVAL_MS && time_decay > DECAY_STEP_INTERVAL_MS) {
     this->timedecay = millis();
@@ -56,20 +41,12 @@ void Bike::process() {
     pushSample(0);
     unsigned long averageRPM = this->calcAverageRPM();
     this->data.rpm = averageRPM;
+
+    BTProcessBike(this->data);
      
     // Prevents us from the if from triggering after we've cleared all samples
     this->zerod++;
 	}
-
-  
-  switch(CONNECTION_TYPE) {
-    case BLUETOOTH:
-      bikeRPM.writeValue(this->data.rpm);
-      break;
-    case WIFI:
-
-    break;
-  }
 }
 
 unsigned long Bike::calcAverageRPM() {

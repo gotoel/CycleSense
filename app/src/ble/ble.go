@@ -137,25 +137,6 @@ func (ble BLEHandler) discoverCharacteristics(serviceUuid string, characteristic
 	} else {
 		fmt.Printf("BLE Service not found in service map: %d\n", serviceUuid)
 	}
-
-	/*
-		char.EnableNotifications(func(buf []byte) {
-			bits := binary.LittleEndian.Uint32(buf)
-			float := math.Float32frombits(bits)
-
-			Bike.RPM = float
-
-			senseController.SetAxis(Bike.RPM)
-			//const DEAD_ZONE = 30
-			//if Bike.RPM > DEAD_ZONE {
-			//	senseController.PressHotkey()
-			//} else {
-			//	senseController.ReleaseHotkey()
-			//}
-			println(fmt.Sprintf("RPMs: %.2f", float))
-		})
-	*/
-
 }
 
 func (ble BLEHandler) SetNotificationHandler(characteristicUuid string, callback func(buf []byte)) {

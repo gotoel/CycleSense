@@ -26,6 +26,12 @@ func NewSenseController() *SenseController {
 }
 
 func (senseController *SenseController) Initialize() {
+	defer func() {
+		if err := recover(); err != nil {
+			senseController.controller.Unplug(true)
+		}
+	}()
+
 	var err error
 	senseController.kb, err = keybd_event.NewKeyBonding()
 	if err != nil {
@@ -44,8 +50,8 @@ func (senseController *SenseController) Initialize() {
 	}
 
 	// Plugin controller
-	if error := senseController.controller.PlugIn(); error != nil {
-		panic(error)
+	if err = senseController.controller.PlugIn(); err != nil {
+		panic(err)
 	}
 }
 

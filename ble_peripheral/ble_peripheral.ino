@@ -3,7 +3,7 @@
 #include "hall.h"
 
 char TITLE[] = "CycleSense";
-const int BAUD_SPEED = 115200;
+const int BAUD_SPEED = 9600;
 
 Chuck chuck;
 Hall hall;
@@ -34,7 +34,7 @@ void loop() {
   hall.process();
 
   // DELAY FOR STABILITY, REMOVE FOR PRODUCTION
-  //delay(1);
+  //delay(100);
 }
 
 void connectHandler(BLEDevice central) {

@@ -33,7 +33,7 @@ func (bike *BikeSensor) setHandlers() {
 		float := math.Float32frombits(bits)
 		bike.RPM = float
 
-		input.Input.SetAxis(bike.RPM)
+		input.Input.SetAxisRPM(bike.RPM)
 		//const DEAD_ZONE = 30
 		//if Bike.RPM > DEAD_ZONE {
 		//	senseController.PressHotkey()

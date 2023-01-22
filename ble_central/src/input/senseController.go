@@ -49,13 +49,20 @@ func (senseController *SenseController) Initialize() {
 	}
 }
 
-func (senseController *SenseController) SetAxis(rpm float32) {
+func (senseController *SenseController) SetAxisRPM(rpm float32) {
 	const MAX_RPM = 300 // this needs to be moved
 	if rpm > MAX_RPM {
 		rpm = MAX_RPM
 	}
 
 	senseController.controller.SetAxis(goxinput.AXIS_LX, rpm/MAX_RPM)
+}
+
+func (senseController *SenseController) SetAxis(x float32, y float32) {
+	// axis range is -1 to 1
+
+	senseController.controller.SetAxis(goxinput.AXIS_LX, x)
+	senseController.controller.SetAxis(goxinput.AXIS_LY, y)
 }
 
 func (senseController *SenseController) PressHotkey() {

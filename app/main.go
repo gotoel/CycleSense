@@ -5,6 +5,8 @@ import (
 	"cycleSenseCentral/src/ble"
 	"cycleSenseCentral/src/input"
 	"cycleSenseCentral/src/sensors"
+	"cycleSenseCentral/src/sensors/bike"
+	"cycleSenseCentral/src/sensors/chuck"
 	"cycleSenseCentral/src/web"
 )
 
@@ -18,20 +20,35 @@ func main() {
 	input.Input.Initialize()
 
 	// Initialize Sensor Manager singleton
-	sensors.NewSensorManager()
+	sensors.NewSensorDataManager()
 
-	// All used services/characteristics need to be
-	// added here for subscriptions.
-	ble.NewBLEHandler(src.CS_DEVICE_ADDR, []ble.BLESubscription{
-		sensors.Manager.Bike.GetBLESubscription(),
-		sensors.Manager.Chuck.GetBLESubscription(),
-	})
+	switch src.DEVICE_CONNECTION_TYPE {
+	case src.Bluetooth:
+		btbike := bike.BTBikeSensor{}
+		btchuck := chuck.BTChuckSensor{}
 
-	// Initialize BLE and subscribe to requested services/characteristics
-	ble.BLE.InitializeBluetooth()
+		sensors.Manager.Bike = &btbike.Data
+		sensors.Manager.Chuck = &btchuck.Data
 
-	// Sensors set BLE handlers, do this after initializing BLE
-	sensors.Manager.InitializeSensors()
+		// All used services/characteristics need to be
+		// added here for subscriptions.
+		ble.NewBLEHandler(src.CS_DEVICE_ADDR, []ble.BLESubscription{
+			btbike.GetBLESubscription(),
+			btchuck.GetBLESubscription(),
+		})
+
+		// Initialize BLE and subscribe to requested services/characteristics
+		ble.BLE.InitializeBluetooth()
+
+		// Must initialize BT sensors after bluetooth is initialized
+		btbike.Initialize()
+		btchuck.Initialize()
+		break
+	case src.WiFi:
+
+		break
+
+	}
 
 	select {}
 }

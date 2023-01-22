@@ -1,38 +1,29 @@
 package sensors
 
 import (
-	"cycleSenseCentral/src/ble"
+	"cycleSenseCentral/src/sensors/bike"
+	"cycleSenseCentral/src/sensors/chuck"
 	"sync"
 )
 
 var once sync.Once
 
-type Sensor interface {
-	GetBLESubscription() ble.BLESubscription
-	initialize()
-}
-
-type SensorManager struct {
-	Bike  *BikeSensor
-	Chuck *ChuckSensor
+type SensorDataManager struct {
+	Bike  *bike.Data
+	Chuck *chuck.Data
 }
 
 var (
-	Manager *SensorManager
+	Manager *SensorDataManager
 )
 
-func NewSensorManager() *SensorManager {
+func NewSensorDataManager() *SensorDataManager {
 	once.Do(func() {
-		Manager = &SensorManager{
-			Bike:  &BikeSensor{},
-			Chuck: &ChuckSensor{},
+		Manager = &SensorDataManager{
+			Bike:  &bike.Data{},
+			Chuck: &chuck.Data{},
 		}
 	})
 
 	return Manager
-}
-
-func (sensors *SensorManager) InitializeSensors() {
-	sensors.Bike.initialize()
-	sensors.Chuck.initialize()
 }

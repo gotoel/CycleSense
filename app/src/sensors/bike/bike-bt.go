@@ -1,10 +1,9 @@
-package sensors
+package bike
 
 import (
 	"cycleSenseCentral/src/ble"
-	"cycleSenseCentral/src/input"
+	"cycleSenseCentral/src/sensors/sensor"
 	"encoding/binary"
-	"fmt"
 	"math"
 )
 
@@ -15,36 +14,28 @@ const (
 	RpmUuid         = "97bb6403-1338-4a42-8563-243ed61234c7"
 )
 
-type BikeSensor struct {
-	Sensor
-
-	subscription ble.BLESubscription
-	RPM          float32
+type BTBikeSensor struct {
+	sensor.SensorBT
+	Data Data
 }
 
-func (bike *BikeSensor) initialize() {
+func (bike *BTBikeSensor) Initialize() {
+	bike.Data = Data{}
 	bike.setHandlers()
 }
 
-func (bike *BikeSensor) setHandlers() {
+func (bike *BTBikeSensor) setHandlers() {
 	// Set RPM handler
 	ble.BLE.SetNotificationHandler(RpmUuid, func(buf []byte) {
 		bits := binary.LittleEndian.Uint32(buf)
 		float := math.Float32frombits(bits)
-		bike.RPM = float
-
-		input.Input.SetAxisRPM(bike.RPM)
-		//const DEAD_ZONE = 30
-		//if Bike.RPM > DEAD_ZONE {
-		//	senseController.PressHotkey()
-		//} else {
-		//	senseController.ReleaseHotkey()
-		//}
-		println(fmt.Sprintf("RPMs: %.2f", float))
+		bike.Data.RPM = float
+		ProcessInputs(bike.Data)
+		//println(fmt.Sprintf("RPMs: %.2f", float))
 	})
 }
 
-func (bike *BikeSensor) GetBLESubscription() (subscription ble.BLESubscription) {
+func (bike *BTBikeSensor) GetBLESubscription() (subscription ble.BLESubscription) {
 	subscription = ble.BLESubscription{
 		Name:        BikeServiceName,
 		ServiceUUID: BikeServiceUuid,

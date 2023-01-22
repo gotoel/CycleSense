@@ -1,12 +1,12 @@
 #include <ArduinoBLE.h>
 #include "chuck.h"
-#include "hall.h"
+#include "bike.h"
 
 char TITLE[] = "CycleSense";
 const int BAUD_SPEED = 9600;
 
 Chuck chuck;
-Hall hall;
+Bike bike;
 
 void setup() {
   Serial.begin(BAUD_SPEED);
@@ -16,7 +16,7 @@ void setup() {
   BLE.setDeviceName(TITLE);
 
   chuck.initialize();
-  hall.initialize();
+  bike.initialize();
 
   BLE.setEventHandler(BLEConnected, connectHandler);
   BLE.setEventHandler(BLEDisconnected, disconnectHandler);
@@ -31,7 +31,7 @@ void loop() {
   BLE.poll();
 
   chuck.process();
-  hall.process();
+  bike.process();
 
   // DELAY FOR STABILITY, REMOVE FOR PRODUCTION
   //delay(100);

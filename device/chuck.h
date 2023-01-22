@@ -19,6 +19,7 @@ class Chuck {
     ChuckData currentData;
     ChuckData lastData;
   
+    void setupConnections();
     ChuckData collectData();
     void debugPrint();
 };

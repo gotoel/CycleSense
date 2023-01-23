@@ -12,7 +12,6 @@
 IPAddress currentIp;
 int status = WL_IDLE_STATUS;
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
-unsigned int localPort = 1337;      // local port to listen on
 char packetBuffer[256]; //buffer to hold incoming packet
 char  ReplyBuffer[] = "acknowledged"; 
 WiFiUDP Udp;
@@ -60,7 +59,7 @@ void WifiSetup() {
   printWifiStatus();
   Serial.println("\nStarting connection to server...");
   // if you get a connection, report back via serial:
-  Udp.begin(localPort);
+  Udp.begin(udpServerPort);
 }
 
 void ProcessWifi() {

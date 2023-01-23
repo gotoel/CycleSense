@@ -2,6 +2,7 @@
 #include <WiiChuck.h>
 #include "chuck.h"
 #include "bt.h"
+#include "wifi.h"
 #include "constants.h"
 
 Accessory nunchuck;
@@ -23,7 +24,7 @@ void Chuck::process() {
     case BLUETOOTH:
       BTProcessChuck(this->lastData, this->currentData);
     case WIFI:
-
+      WifiProcessChuck(this->lastData, this->currentData);
       break;
     
   }

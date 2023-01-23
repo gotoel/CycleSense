@@ -26,6 +26,7 @@ class Bike {
 
     unsigned long calcAverageRPM();
     void pushSample(float);
+    void sendData();
     static void revCounterInterrupt();
 };
 

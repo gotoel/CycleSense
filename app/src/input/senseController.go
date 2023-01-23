@@ -1,6 +1,8 @@
 package input
 
 import (
+	"cycleSenseCentral/src/sensors/manager"
+	"cycleSenseCentral/src/sensors/sensor_event"
 	"github.com/WesleiRamos/goxinput"
 	"github.com/micmonay/keybd_event"
 	"sync"
@@ -9,6 +11,8 @@ import (
 var once sync.Once
 
 type SenseController struct {
+	sensorEvents <-chan sensor_event.SensorEvent
+
 	controller *goxinput.VirtualController
 	kb         keybd_event.KeyBonding
 }
@@ -17,9 +21,11 @@ var (
 	Input *SenseController
 )
 
-func NewSenseController() *SenseController {
+func NewSenseController(ch <-chan sensor_event.SensorEvent) *SenseController {
 	once.Do(func() {
-		Input = &SenseController{}
+		Input = &SenseController{
+			sensorEvents: ch,
+		}
 	})
 
 	return Input
@@ -53,6 +59,26 @@ func (senseController *SenseController) Initialize() {
 	if err = senseController.controller.PlugIn(); err != nil {
 		panic(err)
 	}
+
+	go senseController.processEvents()
+}
+
+func (senseController *SenseController) processEvents() {
+	go func() {
+		for event := range senseController.sensorEvents {
+			_ = event
+			if manager.Manager.Bike.RPM > 40 {
+				senseAxisX := (float32(manager.Manager.Chuck.AxisX) * (2) / 255) - 1
+				senseAxisY := (float32(manager.Manager.Chuck.AxisY) * (2) / 255) - 1
+
+				//println(fmt.Sprintf("(%0.2f, %0.2f)", senseAxisX, senseAxisY))
+
+				senseController.SetAxis(senseAxisX, senseAxisY)
+			} else {
+				senseController.SetAxis(0, 0)
+			}
+		}
+	}()
 }
 
 func (senseController *SenseController) SetAxisRPM(rpm float32) {

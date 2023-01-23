@@ -1,9 +1,9 @@
 package bike
 
-import "cycleSenseCentral/src/input"
+const Name = "Bike"
 
 type Data struct {
-	RPM float32
+	RPM float32 `json:"rpm"`
 }
 
 func ProcessInputs(data Data) {
@@ -14,5 +14,5 @@ func ProcessInputs(data Data) {
 	//	senseController.ReleaseHotkey()
 	//}
 
-	input.Input.SetAxisRPM(data.RPM)
+	//input.Input.SetAxisRPM(data.RPM)
 }

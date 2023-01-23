@@ -1,4 +1,4 @@
-package sensors
+package manager
 
 import (
 	"cycleSenseCentral/src/sensors/bike"

@@ -8,13 +8,12 @@ import (
 )
 
 const (
-	BikeServiceName = "Bike"
-
 	BikeServiceUuid = "97bb6403-1337-4a42-8563-243ed61234c7"
 	RpmUuid         = "97bb6403-1338-4a42-8563-243ed61234c7"
 )
 
 type BTBikeSensor struct {
+	sensor.Sensor
 	sensor.SensorBT
 	Data Data
 }
@@ -30,14 +29,15 @@ func (bike *BTBikeSensor) setHandlers() {
 		bits := binary.LittleEndian.Uint32(buf)
 		float := math.Float32frombits(bits)
 		bike.Data.RPM = float
-		ProcessInputs(bike.Data)
+
+		//ProcessInputs(bike.Data)
 		//println(fmt.Sprintf("RPMs: %.2f", float))
 	})
 }
 
 func (bike *BTBikeSensor) GetBLESubscription() (subscription ble.BLESubscription) {
 	subscription = ble.BLESubscription{
-		Name:        BikeServiceName,
+		Name:        Name,
 		ServiceUUID: BikeServiceUuid,
 		CharacteristicUUIDs: []string{
 			RpmUuid,

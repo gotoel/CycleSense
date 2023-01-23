@@ -3,6 +3,7 @@
 #include "bike.h"
 #include "constants.h"
 #include "bt.h"
+#include "wifi.h"
 
 Chuck chuck;
 Bike bike;
@@ -14,6 +15,9 @@ void setup() {
     case BLUETOOTH:
       BTSetup();
       break;
+    case WIFI:
+      WifiSetup();
+      break;
   }
 
   chuck.initialize();
@@ -23,8 +27,14 @@ void setup() {
 }
 
 void loop() {
-  // Handles bluetooth events
-  BLE.poll();
+  switch(CONNECTION_TYPE) {
+  case BLUETOOTH:
+    // Handles bluetooth events
+    BLE.poll();    
+  case WIFI:
+    ProcessWifi();
+    break;
+  }
 
   chuck.process();
   bike.process();

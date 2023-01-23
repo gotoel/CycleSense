@@ -1,7 +1,7 @@
 package web
 
 import (
-	"cycleSenseCentral/src/sensors"
+	"cycleSenseCentral/src/sensors/manager"
 	"fmt"
 	"net/http"
 )
@@ -13,5 +13,5 @@ func RunWebserver() {
 }
 
 func rpm(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, sensors.Manager.Bike.RPM)
+	fmt.Fprint(w, manager.Manager.Bike.RPM)
 }

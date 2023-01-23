@@ -2,14 +2,12 @@ package chuck
 
 import (
 	"cycleSenseCentral/src/ble"
-	"cycleSenseCentral/src/input"
 	"cycleSenseCentral/src/sensors/sensor"
+	"cycleSenseCentral/src/sensors/sensor_event"
 	"encoding/binary"
 )
 
 const (
-	ChuckServiceName = "Wii Nunchuk"
-
 	ChuckServiceUuid = "97bb6403-0101-4a42-8563-243ed61234c7"
 	ChuckAcclXUuid   = "97bb6403-0102-4a42-8563-243ed61234c7"
 	ChuckAcclYUuid   = "97bb6403-0103-4a42-8563-243ed61234c7"
@@ -21,6 +19,7 @@ const (
 )
 
 type BTChuckSensor struct {
+	sensor.Sensor
 	sensor.SensorBT
 	Data Data
 }
@@ -45,12 +44,16 @@ func (chuck *BTChuckSensor) setHandlers() {
 	// Thumb stick axis (X, Y)
 	ble.BLE.SetNotificationHandler(ChuckAxisXUuid, func(buf []byte) {
 		chuck.Data.AxisX = binary.LittleEndian.Uint32(buf)
-		chuck.updateSenseInput()
+		chuck.Sensor.EventChannel <- sensor_event.SensorEvent{Name: Name}
+		//manager.Manager.NewEvent(sensor_event.SensorEvent{Name: Name})
+		//ProcessInputs(chuck.Data)
 		//println(fmt.Sprintf("(%d, %d)", chuck.AxisX, chuck.AxisY))
 	})
 	ble.BLE.SetNotificationHandler(ChuckAxisYUuid, func(buf []byte) {
 		chuck.Data.AxisY = binary.LittleEndian.Uint32(buf)
-		chuck.updateSenseInput()
+		chuck.Sensor.EventChannel <- sensor_event.SensorEvent{Name: Name}
+		//manager.Manager.NewEvent(sensor_event.SensorEvent{Name: Name})
+		//ProcessInputs(chuck.Data)
 		//println(fmt.Sprintf("(%d, %d)", chuck.AxisX, chuck.AxisY))
 	})
 
@@ -67,17 +70,9 @@ func (chuck *BTChuckSensor) setHandlers() {
 	})
 }
 
-func (chuck *BTChuckSensor) updateSenseInput() {
-	senseAxisX := (float32(chuck.Data.AxisX) * (2) / 255) - 1
-	senseAxisY := (float32(chuck.Data.AxisY) * (2) / 255) - 1
-
-	//println(fmt.Sprintf("(%0.2f, %0.2f)", senseAxisX, senseAxisY))
-	input.Input.SetAxis(senseAxisX, senseAxisY)
-}
-
 func (chuck *BTChuckSensor) GetBLESubscription() (subscription ble.BLESubscription) {
 	subscription = ble.BLESubscription{
-		Name:        ChuckServiceName,
+		Name:        Name,
 		ServiceUUID: ChuckServiceUuid,
 		CharacteristicUUIDs: []string{
 			ChuckAcclXUuid, ChuckAcclYUuid, ChuckAcclZUuid,

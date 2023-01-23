@@ -1,6 +1,7 @@
 #include <ArduinoBLE.h>
 #include "bike.h" 
 #include "bt.h"
+#include "wifi.h"
 #include "constants.h"
 
 int rev;
@@ -30,7 +31,7 @@ void Bike::process() {
     
     this->data.rpm = averageRPM;
 
-    BTProcessBike(this->data);
+    this->sendData();
 
     attachInterrupt(digitalPinToInterrupt(BIKE_PIN),this->revCounterInterrupt,RISING);
   } else if(this->zerod < NUM_SAMPLES && time_passed > DECAY_START_INTERVAL_MS && time_decay > DECAY_STEP_INTERVAL_MS) {
@@ -42,11 +43,23 @@ void Bike::process() {
     unsigned long averageRPM = this->calcAverageRPM();
     this->data.rpm = averageRPM;
 
-    BTProcessBike(this->data);
+    this->sendData();
      
     // Prevents us from the if from triggering after we've cleared all samples
     this->zerod++;
 	}
+}
+
+
+// Sends updated data down selected connection type
+void Bike::sendData() {
+  switch(CONNECTION_TYPE) {
+    case BLUETOOTH:
+      BTProcessBike(this->data);
+    case WIFI:
+      WifiProcessBike(this->data);
+      break;
+  }
 }
 
 unsigned long Bike::calcAverageRPM() {

@@ -100,6 +100,8 @@ void SendMessage(String typeName, StaticJsonDocument<200> doc) {
     }
 }
 
+
+// Wifi sensor handlers... refactor this to not be in the Wifi code?
 void WifiProcessChuck(ChuckData lastData, ChuckData currentData) {
   // I don't like this...
   if(lastData.acclX != currentData.acclX || lastData.acclY != currentData.acclY ||

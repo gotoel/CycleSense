@@ -9,6 +9,8 @@ enum deviceConnType {BLUETOOTH, WIFI, USB};
 const int CONNECTION_TYPE = WIFI;
 
 // WiFi
+
+// Not sure where to put these... 
 const char ssid[] = "TP-LINKARINO"; 
 const char pass[] = "dinbeandinbean";
 const int udpServerPort = 1337; 

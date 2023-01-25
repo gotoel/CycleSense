@@ -1,4 +1,15 @@
-var opts = {
+let joystickOpts = {
+    zone: document.getElementById("joystickL"),
+    mode: "static",
+    color: "red",
+    size: 130,
+    shape: "circle",
+    restOpacity: 255,
+    lockX: true,
+    lockY: true,
+}
+
+let gaugeOpts = {
     angle: 0.09, // The span of the gauge arc
     lineWidth: 0.44, // The line thickness
     radiusScale: 1, // Relative radius
@@ -35,18 +46,3 @@ var opts = {
         fractionDigits: 0  // Optional: Numerical precision. 0=round off.
     },
 };
-var target = document.getElementById('gauge'); // your canvas element
-var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-gauge.setTextField(document.getElementById("value"), 0); // second parameter is decimal points
-gauge.maxValue = 300; // set max gauge value
-gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-gauge.animationSpeed = 32; // set animation speed (32 is default value)
-gauge.set(0); // set actual value
-
-function updateCounter() {
-    fetch("/rpm").then(response => response.text()).then(RPM => {
-        console.log(RPM);
-        gauge.set(parseInt(RPM));
-    });
-}
-setInterval(updateCounter, 300);

@@ -1,0 +1,42 @@
+<base href="/">
+
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="./style.css" rel="stylesheet">
+<link href="./buttons.css" rel="stylesheet">
+
+<head>
+    <meta charset="utf-8" />
+    <title>CycleSense</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+<div class="container bg-light">
+    <div class="gauge">
+        <canvas id="gauge"></canvas>
+        <div class="label"><output id="value"></output> RPM</div>
+    </div>
+    <div class="joystickInfoContainer" id="joystickInfoContainer">
+        <div class="joystickL" id="joystickL"></div>
+        <div class="buttons">
+            <ul>
+                <li><a id="key_c">C</a></li>
+                <li><a id="key_z">Z</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Gauge -->
+<script src="https://bernii.github.io/gauge.js/dist/gauge.min.js">
+</script>
+
+<script type='text/javascript' src='https://cdn.jsdelivr.net/gh/TSedlar/pseudo-styler@1.0.8/pseudostyler.js'></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.0/nipplejs.js"></script>
+
+<script src="./opts.js"></script>
+<script type="module" src="./scripts.js"></script>
+</body>

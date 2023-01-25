@@ -74,6 +74,9 @@ func (senseController *SenseController) processEvents() {
 				//println(fmt.Sprintf("(%0.2f, %0.2f)", senseAxisX, senseAxisY))
 
 				senseController.SetAxis(senseAxisX, senseAxisY)
+
+				senseController.controller.SetBtn(goxinput.BUTTON_A, manager.Manager.Chuck.ButtonC)
+				senseController.controller.SetBtn(goxinput.BUTTON_B, manager.Manager.Chuck.ButtonZ)
 			} else {
 				senseController.SetAxis(0, 0)
 			}
@@ -93,8 +96,9 @@ func (senseController *SenseController) SetAxisRPM(rpm float32) {
 func (senseController *SenseController) SetAxis(x float32, y float32) {
 	// axis range is -1 to 1
 
-	senseController.controller.SetAxis(goxinput.AXIS_LX, x)
-	senseController.controller.SetAxis(goxinput.AXIS_LY, y)
+	set := senseController.controller.SetAxis(goxinput.AXIS_LX, x)
+	set = senseController.controller.SetAxis(goxinput.AXIS_LY, y)
+	_ = set
 }
 
 func (senseController *SenseController) PressHotkey() {

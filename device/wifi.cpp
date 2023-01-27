@@ -7,7 +7,6 @@
 #include "bike.h"
 #include "chuck.h"
 
-
 // UDP
 IPAddress currentIp;
 int status = WL_IDLE_STATUS;
@@ -62,32 +61,6 @@ void WifiSetup() {
   Udp.begin(udpServerPort);
 }
 
-void ProcessWifi() {
-  // if there's data available, read a packet
-  int packetSize = Udp.parsePacket();
-  if(packetSize != 0) {
-    Serial.print("Received packet of size ");
-    Serial.println(packetSize);
-    Serial.print("Size of ");
-    Serial.println(sizeof(WIFI_CONNECT_MSG));
-	
-	  // read the packet into packetBufffer
-    int len = Udp.read(packetBuffer, packetSize);
-    if (len > 0) {
-      packetBuffer[len] = 0;
-    }
-
-    // Received connect message, set app IP
-    if(strcmp(packetBuffer,WIFI_CONNECT_MSG) == 0) {
-        currentIp = Udp.remoteIP();
-        Serial.print("Received CONNECT from ");
-        Serial.print(currentIp);
-        Serial.print(":");
-        Serial.println(Udp.remotePort());      
-    }
-  }  
-}
-
 void SendMessage(String typeName, StaticJsonDocument<200> doc) {
     if(currentIp) {
       doc["type"] = typeName;
@@ -100,6 +73,38 @@ void SendMessage(String typeName, StaticJsonDocument<200> doc) {
     }
 }
 
+void ProcessWifi() {
+  // if there's data available, read a packet
+  int packetSize = Udp.parsePacket();
+  if(packetSize != 0) {
+    Serial.print("Received packet of size ");
+    Serial.println(packetSize);
+	
+	  // read the packet into packetBufffer
+    int len = Udp.read(packetBuffer, packetSize);
+    if (len > 0) {
+      packetBuffer[len] = 0;
+    }
+
+    if (strcmp(packetBuffer, HEARTBEAT_MSG) == 0) {
+        // Send heartbeat, nothing fancy yet
+        StaticJsonDocument<200> heartbeat;
+        SendMessage("Heartbeat", heartbeat);
+    } else if (strcmp(packetBuffer, WIFI_CONNECT_MSG) == 0) {
+        // Received connect message, set app IP
+        currentIp = Udp.remoteIP();
+        Serial.print("Received CONNECT from ");
+        Serial.print(currentIp);
+        Serial.print(":");
+        Serial.println(Udp.remotePort());      
+
+        // Send acknowledgement
+        StaticJsonDocument<200> ack;
+        ack["msg"] = "Ready to motionlessly roll...";
+        SendMessage("ConnectAck", ack);
+    }
+  }  
+}
 
 // Wifi sensor handlers... refactor this to not be in the Wifi code?
 void WifiProcessChuck(ChuckData lastData, ChuckData currentData) {
@@ -109,20 +114,20 @@ void WifiProcessChuck(ChuckData lastData, ChuckData currentData) {
     lastData.axisY != currentData.axisY || lastData.buttonC != currentData.buttonC ||
     lastData.buttonZ != currentData.buttonZ) {
       // Build json doc object of current data and send over udp
-      StaticJsonDocument<200> doc;
-      doc["accl_x"] = currentData.acclX;
-      doc["accl_y"] = currentData.acclY;
-      doc["accl_Z"] = currentData.acclZ;
-      doc["axis_x"] = currentData.axisX;
-      doc["axis_y"] = currentData.axisY;
-      doc["button_c"] = currentData.buttonC;
-      doc["button_z"] = currentData.buttonZ;
-      SendMessage("Chuck", doc);
+      StaticJsonDocument<200> chuck;
+      chuck["accl_x"] = currentData.acclX;
+      chuck["accl_y"] = currentData.acclY;
+      chuck["accl_Z"] = currentData.acclZ;
+      chuck["axis_x"] = currentData.axisX;
+      chuck["axis_y"] = currentData.axisY;
+      chuck["button_c"] = currentData.buttonC;
+      chuck["button_z"] = currentData.buttonZ;
+      SendMessage("Chuck", chuck);
   }
 }
 
 void WifiProcessBike(BikeData data) {
-    StaticJsonDocument<200> doc;
-    doc["rpm"] = data.rpm;
-    SendMessage("Bike", doc);
+    StaticJsonDocument<200> bike;
+    bike["rpm"] = data.rpm;
+    SendMessage("Bike", bike);
 }

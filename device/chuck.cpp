@@ -7,8 +7,6 @@
 
 Accessory nunchuck;
 
-
-
 void Chuck::initialize() {
 	nunchuck.begin();
 	if (nunchuck.type == Unknown) {

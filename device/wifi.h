@@ -5,6 +5,7 @@
 #include "chuck.h"
 
 const char WIFI_CONNECT_MSG[] = "CYCLESENSE|CONNECT";
+const char HEARTBEAT_MSG[] = "Heartbeat";
 
 void WifiSetup();
 void ProcessWifi();

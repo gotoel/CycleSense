@@ -40,7 +40,7 @@ func main() {
 
 		// All used services/characteristics need to be
 		// added here for subscriptions.
-		ble.NewBLEHandler(constants.BT_MAC_ADDR, []ble.BLESubscription{
+		ble.NewBLEHandler(constants.BtMacAddr, []ble.BLESubscription{
 			btbike.GetBLESubscription(),
 			btchuck.GetBLESubscription(),
 		})

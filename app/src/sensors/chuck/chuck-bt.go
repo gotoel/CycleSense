@@ -45,16 +45,10 @@ func (chuck *BTChuckSensor) setHandlers() {
 	ble.BLE.SetNotificationHandler(ChuckAxisXUuid, func(buf []byte) {
 		chuck.Data.AxisX = binary.LittleEndian.Uint32(buf)
 		chuck.Sensor.EventChannel <- sensor_event.SensorEvent{Name: Name}
-		//manager.Manager.NewEvent(sensor_event.SensorEvent{Name: Name})
-		//ProcessInputs(chuck.Data)
-		//println(fmt.Sprintf("(%d, %d)", chuck.AxisX, chuck.AxisY))
 	})
 	ble.BLE.SetNotificationHandler(ChuckAxisYUuid, func(buf []byte) {
 		chuck.Data.AxisY = binary.LittleEndian.Uint32(buf)
 		chuck.Sensor.EventChannel <- sensor_event.SensorEvent{Name: Name}
-		//manager.Manager.NewEvent(sensor_event.SensorEvent{Name: Name})
-		//ProcessInputs(chuck.Data)
-		//println(fmt.Sprintf("(%d, %d)", chuck.AxisX, chuck.AxisY))
 	})
 
 	// Buttons: C, Z

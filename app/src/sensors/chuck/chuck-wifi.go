@@ -17,7 +17,5 @@ func (chuck *WifiChuckSensor) InitializeHandlers() {
 	wifi.Handler.AddHandler(Name, func(data []byte) {
 		json.Unmarshal(data, &chuck.Data)
 		chuck.Sensor.EventChannel <- sensor_event.SensorEvent{Name: Name}
-		//manager.Manager.NewEvent(sensor_event.SensorEvent{Name: Name})
-		//ProcessInputs(chuck.Data)
 	})
 }

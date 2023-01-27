@@ -11,12 +11,3 @@ type Data struct {
 	ButtonC bool   `json:"button_c"`
 	ButtonZ bool   `json:"button_z"`
 }
-
-func ProcessInputs(data Data) {
-	//senseAxisX := (float32(data.AxisX) * (2) / 255) - 1
-	//senseAxisY := (float32(data.AxisY) * (2) / 255) - 1
-
-	//println(fmt.Sprintf("(%0.2f, %0.2f)", senseAxisX, senseAxisY))
-
-	//input.Input.SetAxis(senseAxisX, senseAxisY)
-}

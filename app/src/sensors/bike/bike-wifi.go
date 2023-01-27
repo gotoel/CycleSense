@@ -17,7 +17,5 @@ func (bike *WifiBikeSensor) InitializeHandlers() {
 	wifi.Handler.AddHandler(Name, func(data []byte) {
 		json.Unmarshal(data, &bike.Data)
 		bike.Sensor.EventChannel <- sensor_event.SensorEvent{Name: Name}
-		//manager.Manager.NewEvent(sensor_event.SensorEvent{Name: Name})
-		//ProcessInputs(bike.Data)
 	})
 }

@@ -29,9 +29,6 @@ func (bike *BTBikeSensor) setHandlers() {
 		bits := binary.LittleEndian.Uint32(buf)
 		float := math.Float32frombits(bits)
 		bike.Data.RPM = float
-
-		//ProcessInputs(bike.Data)
-		//println(fmt.Sprintf("RPMs: %.2f", float))
 	})
 }
 

@@ -1,8 +1,8 @@
 <h3 align="center">
-  Virtual game input device that gives the user control via their stationary bike.
+  Virtual game input device that gives the user control via their stationary bike
 </h3>
 <p align="center">
-  Supports connectivity over Bluetooth and Wifi.
+  Supports connectivity over Bluetooth and Wifi
 </p>
 
 <p>&nbsp;</p>

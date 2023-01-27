@@ -5,7 +5,6 @@
   Supports connectivity over Bluetooth and Wifi
 </p>
 
-<p>&nbsp;</p>
 
 <p align="center">
   <a>

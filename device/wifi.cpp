@@ -77,8 +77,8 @@ void ProcessWifi() {
   // if there's data available, read a packet
   int packetSize = Udp.parsePacket();
   if(packetSize != 0) {
-    Serial.print("Received packet of size ");
-    Serial.println(packetSize);
+    //Serial.print("Received packet of size ");
+    //Serial.println(packetSize);
 	
 	  // read the packet into packetBufffer
     int len = Udp.read(packetBuffer, packetSize);

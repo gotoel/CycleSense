@@ -21,12 +21,13 @@
     overflow: hidden; !important;
 }
 
-body {
-    max-width: 340px;
-}
-
 .container {
-    background-color: #bbb1b1;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    width: -moz-fit-content;
+    width: fit-content;
+
 }
 
 .gauge {
@@ -41,11 +42,13 @@ body {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
-
+    width: -moz-fit-content;
+    width: fit-content;
     display: inline-block;
 }
 
 .joystickInfoContainer .joystickL {
+    margin: 0px 0px 0px;
     padding: 15px 0px 15px;
     float:left;
 }
@@ -55,6 +58,7 @@ body {
     padding: 15px 0px 15px;
     float:right;
 }
+
 
 .label {
     vertical-align: middle;

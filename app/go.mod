@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/WesleiRamos/goxinput v0.0.0-20190612161108-862345996ed8
 	github.com/micmonay/keybd_event v1.1.1
+	gopkg.in/yaml.v3 v3.0.1
 	tinygo.org/x/bluetooth v0.6.0
 )
 

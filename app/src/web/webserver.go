@@ -7,7 +7,13 @@ import (
 )
 
 func RunWebserver() {
-	http.Handle("/", http.FileServer(http.Dir("./src/web/dashboard")))
+	http.Handle("/", http.FileServer(http.Dir("./src/web/simple")))
+	fs := http.FileServer(http.Dir("./src/web/dashboard"))
+	_ = fs
+	http.Handle("/dashboard", http.FileServer(http.Dir("./src/web/dashboard")))
+	http.Handle("/dashboard/",
+		http.StripPrefix("/dashboard/", http.FileServer(http.Dir("./src/web/dashboard"))))
+
 	http.HandleFunc("/stats", stats)
 	http.ListenAndServe(":3000", nil)
 }

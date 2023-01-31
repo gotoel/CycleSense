@@ -1,0 +1,61 @@
+.nipple {
+    background-color:orange;
+    text-align: center;
+}
+
+.nipple .collection_0 {
+    padding-left:10pt; !important;
+    border-width: 1px; !important;
+    border-style: solid; !important;
+}
+
+.nipple .front {
+    border-width: 2px; !important;
+    border-style: solid; !important;
+    overflow: hidden; !important;
+}
+
+.nipple .back {
+    border-width: 1px; !important;
+    border-style: solid; !important;
+    overflow: hidden; !important;
+}
+
+.container {
+    background-color: #bbb1b1;
+}
+
+.gauge {
+    width: -moz-fit-content;
+    width: fit-content;
+}
+
+.joystickInfoContainer {
+    margin: 75px 80px 75px;
+    padding: 15px 0px 15px;
+
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+
+    display: inline-block;
+}
+
+.joystickInfoContainer .joystickL {
+    padding: 15px 0px 15px;
+    float:left;
+}
+
+.joystickInfoContainer .buttons {
+    margin: 0px 150px 0px;
+    padding: 15px 0px 15px;
+    float:right;
+}
+
+.label {
+    vertical-align: middle;
+    text-align: center; /* center the text */
+    position: relative; /* position the label relative to the box */
+
+    width: 100%; /* make the label as wide as the box */
+}

@@ -7,7 +7,7 @@
 int rev;
 
 void Bike::initialize() {
-  attachInterrupt(digitalPinToInterrupt(BIKE_PIN),revCounterInterrupt,RISING);
+  attachInterrupt(digitalPinToInterrupt(BIKE_PIN),revCounterInterrupt, RISING);
 }
 
 void Bike::process() {
@@ -33,7 +33,7 @@ void Bike::process() {
 
     this->sendData();
 
-    attachInterrupt(digitalPinToInterrupt(BIKE_PIN),this->revCounterInterrupt,RISING);
+    attachInterrupt(digitalPinToInterrupt(BIKE_PIN),this->revCounterInterrupt, RISING);
   } else if(this->zerod < NUM_SAMPLES && time_passed > DECAY_START_INTERVAL_MS && time_decay > DECAY_STEP_INTERVAL_MS) {
     this->timedecay = millis();
 

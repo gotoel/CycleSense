@@ -18,14 +18,7 @@ void Chuck::process() {
   this->lastData = this->currentData;
   this->currentData = this->collectData();
 
-  switch(CONNECTION_TYPE) {
-    case BLUETOOTH:
-      BTProcessChuck(this->lastData, this->currentData);
-    case WIFI:
-      WifiProcessChuck(this->lastData, this->currentData);
-      break;
-    
-  }
+  this->sendData();
 
   // set to true for debugging
   if(false) {
@@ -41,6 +34,17 @@ ChuckData Chuck::collectData() {
   return {nunchuck.getAccelX(), nunchuck.getAccelY(), nunchuck.getAccelZ(), 
           nunchuck.getJoyX(), nunchuck.getJoyY(),
           nunchuck.getButtonC(), nunchuck.getButtonZ()};
+}
+
+// Sends updated data down selected connection type
+void Chuck::sendData() {
+  switch(CONNECTION_TYPE) {
+    case BLUETOOTH:
+      BTProcessChuck(this->lastData, this->currentData);
+    case WIFI:
+      WifiProcessChuck(this->lastData, this->currentData);
+      break;
+  }
 }
 
 void Chuck::debugPrint() {

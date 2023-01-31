@@ -20,6 +20,7 @@ class Chuck {
     ChuckData lastData;
   
     ChuckData collectData();
+    void sendData();
     void debugPrint();
 };
 

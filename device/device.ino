@@ -4,13 +4,15 @@
 #include "constants.h"
 #include "bt.h"
 #include "wifi.h"
+#include <WiiChuck.h>
 
 Chuck chuck;
 Bike bike;
+Accessory nunchuck1;
 
 void setup() {
   Serial.begin(BAUD_SPEED);
-
+  
   switch(CONNECTION_TYPE) {
     case BLUETOOTH:
       BTSetup();
@@ -27,10 +29,18 @@ void setup() {
 }
 
 void loop() {
+  /*
+	Serial.println("-------------------------------------------");
+	nunchuck1.readData();    // Read inputs and update maps
+	//nunchuck1.printInputs(); // Print all inputs
+  nunchuck1.printInputsClassic();
+*/
+
   switch(CONNECTION_TYPE) {
   case BLUETOOTH:
     // Handles bluetooth events
-    BLE.poll();    
+    BLE.poll(); 
+    break;   
   case WIFI:
     ProcessWifi();
     break;
@@ -40,5 +50,5 @@ void loop() {
   bike.process();
 
   // DELAY FOR STABILITY, REMOVE FOR PRODUCTION
-  //delay(100);
+  //delay(10);
 }

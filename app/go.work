@@ -1,0 +1,13 @@
+go 1.19
+
+use (
+	./mainApp
+	./proxy
+	./shared
+)
+
+replace mainApp v0.0.0 => ./mainApp
+
+replace proxy v0.0.0 => ./proxy
+
+replace shared v0.0.0 => ./shared

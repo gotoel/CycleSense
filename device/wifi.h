@@ -9,7 +9,7 @@ const char HEARTBEAT_MSG[] = "Heartbeat";
 
 void WifiSetup();
 void ProcessWifi();
-void WifiProcessChuck(ChuckData lastData, ChuckData currentData);
+void WifiSendChuckData(ChuckData chuck);
 void WifiProcessBike(BikeData bike);
 
 #endif

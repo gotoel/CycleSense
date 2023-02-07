@@ -56,6 +56,7 @@ void Bike::sendData() {
   switch(CONNECTION_TYPE) {
     case BLUETOOTH:
       BTProcessBike(this->data);
+      break;
     case WIFI:
       WifiProcessBike(this->data);
       break;

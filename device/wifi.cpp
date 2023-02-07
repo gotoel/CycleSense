@@ -6,12 +6,13 @@
 #include "constants.h"
 #include "bike.h"
 #include "chuck.h"
+#include "string.h"
 
 // UDP
 IPAddress currentIp;
 int status = WL_IDLE_STATUS;
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
-char packetBuffer[256]; //buffer to hold incoming packet
+char packetBuffer[1024]; //buffer to hold incoming packet
 char  ReplyBuffer[] = "acknowledged"; 
 WiFiUDP Udp;
 
@@ -65,6 +66,11 @@ void SendMessage(String typeName, StaticJsonDocument<200> doc) {
     if(currentIp) {
       doc["type"] = typeName;
 
+      //debug
+      //Serial.print("Sending data: ");
+      //Serial.println(typeName);
+      //serializeJson(doc, Serial);
+
       // send a reply, to the IP address and port that sent us the packet we received
       Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
       //Udp.write(ReplyBuffer);
@@ -107,23 +113,50 @@ void ProcessWifi() {
 }
 
 // Wifi sensor handlers... refactor this to not be in the Wifi code?
-void WifiProcessChuck(ChuckData lastData, ChuckData currentData) {
-  // I don't like this...
-  if(lastData.acclX != currentData.acclX || lastData.acclY != currentData.acclY ||
-    lastData.acclZ != currentData.acclZ || lastData.axisX != currentData.axisX ||
-    lastData.axisY != currentData.axisY || lastData.buttonC != currentData.buttonC ||
-    lastData.buttonZ != currentData.buttonZ) {
-      // Build json doc object of current data and send over udp
-      StaticJsonDocument<200> chuck;
-      chuck["accl_x"] = currentData.acclX;
-      chuck["accl_y"] = currentData.acclY;
-      chuck["accl_Z"] = currentData.acclZ;
-      chuck["axis_x"] = currentData.axisX;
-      chuck["axis_y"] = currentData.axisY;
-      chuck["button_c"] = currentData.buttonC;
-      chuck["button_z"] = currentData.buttonZ;
-      SendMessage("Chuck", chuck);
-  }
+void WifiSendChuckData(ChuckData currentData) {
+  // Build json doc object of current data and send over udp
+  StaticJsonDocument<200> info;
+  info["controller_type"] = currentData.controllerType;
+  SendMessage("ChuckInfo", info);
+
+  StaticJsonDocument<200> sticks;
+  sticks["axis_left_x"] = currentData.axisLeftX;
+  sticks["axis_left_y"] = currentData.axisLeftY;
+  sticks["axis_right_x"] = currentData.axisRightX;
+  sticks["axis_right_y"] = currentData.axisRightY;
+  SendMessage("ChuckSticks", sticks);
+
+  StaticJsonDocument<200> accelerometer;
+  accelerometer["accl_x"] = currentData.acclX;
+  accelerometer["accl_y"] = currentData.acclY;
+  accelerometer["accl_Z"] = currentData.acclZ;
+  SendMessage("ChuckAccelerometer", accelerometer);
+
+  StaticJsonDocument<200> buttons;
+  buttons["button_c"] = currentData.buttonC;
+  buttons["button_z"] = currentData.buttonZ;
+  buttons["button_a"] = currentData.buttonA;
+  buttons["button_b"] = currentData.buttonB;
+  buttons["button_x"] = currentData.buttonX;
+  buttons["button_y"] = currentData.buttonY;
+  buttons["button_minus"] = currentData.buttonMinus;
+  buttons["button_home"] = currentData.buttonHome;
+  buttons["button_plus"] = currentData.buttonPlus;
+  SendMessage("ChuckButtons", buttons);
+
+  StaticJsonDocument<200> triggers;
+  triggers["trigger_left"] = currentData.triggerLeft;
+  triggers["trigger_right"] = currentData.triggerRight;
+  triggers["trigger_z_left"] = currentData.triggerZLeft;
+  triggers["trigger_z_right"] = currentData.triggerZRight;
+  SendMessage("ChuckTriggers", triggers);
+
+  StaticJsonDocument<200> dpad;
+  dpad["pad_up"] = currentData.padUp;
+  dpad["pad_down"] = currentData.padDown;
+  dpad["pad_right"] = currentData.padRight;
+  dpad["pad_left"] = currentData.padLeft;
+  SendMessage("ChuckDpad", dpad);
 }
 
 void WifiProcessBike(BikeData data) {

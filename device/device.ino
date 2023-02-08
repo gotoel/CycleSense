@@ -50,5 +50,5 @@ void loop() {
   bike.process();
 
   // DELAY FOR STABILITY, REMOVE FOR PRODUCTION
-  //delay(10);
+  delay(10);
 }

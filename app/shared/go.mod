@@ -16,5 +16,7 @@ require (
 	github.com/saltosystems/winrt-go v0.0.0-20220826130236-ddc8202da421 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/tinygo-org/cbgo v0.0.4 // indirect
+	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
+	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	golang.org/x/sys v0.0.0-20220829200755-d48e67d00261 // indirect
 )

@@ -13,7 +13,7 @@ type BTBikeSensorProxy struct {
 }
 
 type BTBikeDataProxy struct {
-	dataType string `json:"type"`
+	dataType string `msgpack:"type"`
 	bike.Data
 }
 

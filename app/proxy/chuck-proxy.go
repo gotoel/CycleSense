@@ -12,7 +12,7 @@ type BTChuckSensorProxy struct {
 }
 
 type BTChuckDataProxy struct {
-	dataType string `json:"type"`
+	dataType string `msgpack:"type"`
 	chuck.Data
 }
 

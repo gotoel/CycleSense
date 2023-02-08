@@ -43,7 +43,14 @@ class Chuck {
   public:
     void initialize();
     void process(); 
-    bool valuesChanged();
+
+    bool infoChanged();
+    bool acclChanged();
+    bool axisChanged();
+    bool triggerChanged();
+    bool dpadChanged();
+    bool buttonsChanged();
+
     ChuckData getCurrentData();
   private:
     ChuckData currentData;

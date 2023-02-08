@@ -1,7 +1,7 @@
 package bike
 
 import (
-	"encoding/json"
+	"github.com/vmihailenco/msgpack/v5"
 	"shared/comms"
 	"shared/sensors/sensor"
 	"shared/sensors/sensor_event"
@@ -15,7 +15,7 @@ type WifiBikeSensor struct {
 
 func (bike *WifiBikeSensor) InitializeHandlers() {
 	comms.Handler.AddHandler(Name, func(data []byte) {
-		json.Unmarshal(data, &bike.Data)
+		msgpack.Unmarshal(data, &bike.Data)
 		bike.Sensor.EventChannel <- sensor_event.SensorEvent{Name: Name}
 	})
 }

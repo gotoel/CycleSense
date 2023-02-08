@@ -1,8 +1,8 @@
 package comms
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/vmihailenco/msgpack/v5"
 	"net"
 	"shared/constants"
 	"sync"
@@ -22,11 +22,11 @@ const (
 )
 
 type HeartbeatResponse struct {
-	Msg string `json:"msg"`
+	Msg string `msgpack:"msg"`
 }
 
 type ConnectAck struct {
-	Msg string `json:"msg"`
+	Msg string `msgpack:"msg"`
 }
 
 type WiFiHandler struct {
@@ -71,10 +71,10 @@ func (wifi *WiFiHandler) InitializeWifi() {
 	// this should probably be more secure...
 	wifi.AddHandler(ConnectAckHandler, func(data []byte) {
 		ack := ConnectAck{}
-		err = json.Unmarshal(data, &ack)
+		err = msgpack.Unmarshal(data, &ack)
 
 		if err == nil {
-			println(fmt.Sprintf("Connected to CycleSense device, msg from device: %s", ack.Msg))
+			log(fmt.Sprintf("Connected to CycleSense device, msg from device: %s", ack.Msg))
 			wifi.connected = true
 
 			go wifi.heartbeat()
@@ -96,7 +96,7 @@ func (wifi *WiFiHandler) RemoveHandler(handlerName string) {
 }
 
 func (wifi *WiFiHandler) attemptConnection() {
-	println("\nAttempting to connect to device...")
+	log("Attempting to connect to device...")
 	for !wifi.connected {
 		wifi.sendData([]byte(WifiConnectMsg))
 		time.Sleep(time.Second * 2)
@@ -112,7 +112,7 @@ func (wifi *WiFiHandler) heartbeat() {
 		// Exceeded the amount of heartbeats sent without
 		// a response, disconnect.
 		if wifi.heartbeatQueued > HeartbeatFailureThreshold {
-			println("Heartbeat timed out, disconnecting from device...")
+			log("Heartbeat timed out, disconnecting from device...")
 			wifi.RemoveHandler(Heartbeat)
 			wifi.connected = false
 
@@ -143,7 +143,7 @@ func (wifi *WiFiHandler) listen() {
 
 		data := buffer[0:readLength]
 		//println(string(data))
-		wifi.processUdpData(string(data))
+		wifi.processUdpData(data)
 	}
 }
 
@@ -154,9 +154,9 @@ func (wifi *WiFiHandler) sendData(data []byte) {
 	}
 }
 
-func (wifi *WiFiHandler) processUdpData(data string) {
+func (wifi *WiFiHandler) processUdpData(data []byte) {
 	dataMap := make(map[string]interface{})
-	err := json.Unmarshal([]byte(data), &dataMap)
+	err := msgpack.Unmarshal(data, &dataMap)
 	if err == nil {
 		if typeName, ok := dataMap["type"]; ok {
 			formattedTypeName := fmt.Sprintf("%v", typeName)
@@ -165,4 +165,8 @@ func (wifi *WiFiHandler) processUdpData(data string) {
 			}
 		}
 	}
+}
+
+func log(str string) {
+	println(fmt.Sprintf("[%s] %s", time.Now().Format(time.Stamp), str))
 }

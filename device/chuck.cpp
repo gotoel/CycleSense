@@ -121,25 +121,65 @@ ChuckData Chuck::getCurrentData() {
   return this->currentData;
 }
 
-bool Chuck::valuesChanged() {
+bool Chuck::infoChanged() {
+  lastData = this->lastData;
+  currentData = this->currentData;
+  if(lastData.controllerType != currentData.controllerType) {
+    return true;
+  }
+  return false;
+}
+
+bool Chuck::acclChanged() {
   lastData = this->lastData;
   currentData = this->currentData;
   if(lastData.acclX != currentData.acclX || lastData.acclY != currentData.acclY ||
-    lastData.acclZ != currentData.acclZ || 
-    lastData.axisLeftX != currentData.axisLeftX || lastData.axisLeftY != currentData.axisLeftY || 
-    lastData.buttonC != currentData.buttonC || lastData.buttonZ != currentData.buttonZ || 
-    lastData.axisRightX != currentData.axisRightX || lastData.axisRightY != currentData.axisRightY ||
+    lastData.acclZ != currentData.acclZ) {
+      return true;
+    }
+  return false;
+}
+
+bool Chuck::axisChanged() {
+  lastData = this->lastData;
+  currentData = this->currentData;
+  if(lastData.axisLeftX != currentData.axisLeftX || lastData.axisLeftY != currentData.axisLeftY || 
+  lastData.axisRightX != currentData.axisRightX || lastData.axisRightY != currentData.axisRightY) {
+    return true;
+  }
+  return false;
+}
+
+bool Chuck::triggerChanged() {
+  lastData = this->lastData;
+  currentData = this->currentData;
+  if(lastData.triggerZLeft != currentData.triggerZLeft || lastData.triggerZRight != currentData.triggerZRight ||
+    lastData.triggerLeft != currentData.triggerLeft || lastData.triggerRight != currentData.triggerRight) {
+      return true;
+    }
+  return false;
+}
+
+bool Chuck::dpadChanged() {
+  lastData = this->lastData;
+  currentData = this->currentData;
+  if(lastData.padUp != currentData.padUp || lastData.padDown != currentData.padDown ||
+    lastData.padRight != currentData.padRight || lastData.padLeft != currentData.padLeft) {
+      return true;
+    }
+  return false;
+}
+
+bool Chuck::buttonsChanged() {
+  lastData = this->lastData;
+  currentData = this->currentData;
+  if(lastData.buttonC != currentData.buttonC || lastData.buttonZ != currentData.buttonZ || 
     lastData.buttonX != currentData.buttonX || lastData.buttonY != currentData.buttonY ||
     lastData.buttonA != currentData.buttonA || lastData.buttonB != currentData.buttonB || 
-    lastData.triggerZLeft != currentData.triggerZLeft || lastData.triggerZRight != currentData.triggerZRight ||
-    lastData.triggerLeft != currentData.triggerLeft || lastData.triggerRight != currentData.triggerRight ||
-    lastData.padUp != currentData.padUp || lastData.padDown != currentData.padDown ||
-    lastData.padRight != currentData.padRight || lastData.padLeft != currentData.padLeft ||
     lastData.buttonMinus != currentData.buttonMinus || lastData.buttonHome != lastData.buttonHome || 
     lastData.buttonPlus != lastData.buttonPlus) {
       return true;
-  }
-
+    }
   return false;
 }
 
@@ -149,15 +189,15 @@ void Chuck::sendData() {
     case BLUETOOTH: 
     {
       BTProcessChuck(this->lastData, this->currentData);
-      if(this->valuesChanged()) 
-        BLE.poll();
+      //if(this->valuesChanged()) 
+      BLE.poll();
     }
     break;
     case WIFI: 
     {
-      if(this->valuesChanged()) {
-        WifiSendChuckData(this->currentData);
-      }
+      //if(this->valuesChanged()) {
+      WifiSendChuckData(*this);
+      //}
     }
     break;
   }

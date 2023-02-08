@@ -13,11 +13,11 @@ import (
 var once sync.Once
 
 type HeartbeatResponse struct {
-	Msg string `json:"msg"`
+	Msg string `msgpack:"msg"`
 }
 
 type ConnectAck struct {
-	Msg string `json:"msg"`
+	Msg string `msgpack:"msg"`
 }
 
 type WiFiHandlerProxy struct {

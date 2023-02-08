@@ -1,6 +1,6 @@
 package constants
 
-const DeviceWifiIp = "192.168.0.157"
+const DeviceWifiIp = "192.168.0.183"
 const DeviceWifiPort = 1337
 const BtMacAddr = "34:94:54:27:37:E6"
 

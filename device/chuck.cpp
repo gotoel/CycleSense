@@ -24,9 +24,11 @@ void Chuck::initialize() {
 	switch (conType) {
   case(ExtensionType::NoController):
       Serial.println("No controller detected");
+      this->currentData.info.controllerType = -1;
       break;
     case(ExtensionType::UnknownController):
       Serial.println("Unknown controller connected");
+      this->currentData.info.controllerType = -1;
       break;
     case(ExtensionType::Nunchuk):
       Serial.println("Nunchuk connected!");
@@ -64,15 +66,15 @@ void Chuck::collectData() {
         this->currentData.accelerometer.acclY = nchuk.accelY();
         this->currentData.accelerometer.acclZ = nchuk.accelZ();
 
+        this->currentData.sticks.axisLeftX = classic.leftJoyX();
+        this->currentData.sticks.axisLeftY = classic.leftJoyY();
 
         this->currentData.buttons.buttonC = nchuk.buttonC();
         this->currentData.buttons.buttonZ = nchuk.buttonZ();
       }
       break;
       case(ExtensionType::ClassicController):   
-      {
-        Serial.println(classic.buttonL());
-        
+      {        
         this->currentData.info.controllerType = 1;
         this->currentData.accelerometer.acclX = 0;
         this->currentData.accelerometer.acclY = 0;
@@ -109,6 +111,32 @@ void Chuck::collectData() {
   else {  
     // bad data, return current data
     Serial.println("BAD");
+    this->currentData.info.controllerType = 0;
+
+    port.begin();
+    port.connect();
+
+    // Identify controller
+    conType = port.getControllerType();
+    switch (conType) {
+    case(ExtensionType::NoController):
+        Serial.println("No controller detected");
+        this->currentData.info.controllerType = -1;
+        break;
+      case(ExtensionType::UnknownController):
+        Serial.println("Unknown controller connected");
+        this->currentData.info.controllerType = -1;
+        break;
+      case(ExtensionType::Nunchuk):
+        Serial.println("Nunchuk connected!");
+        this->currentData.info.controllerType = 0;
+        break;
+      case(ExtensionType::ClassicController):
+        Serial.println("Classic Controller connected!");
+        this->currentData.info.controllerType = 1;
+        break;
+      default: break; 
+    }
   } 
 }
 

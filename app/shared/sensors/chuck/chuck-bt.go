@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"shared/comms"
 	"shared/sensors/sensor"
-	"shared/sensors/sensor_event"
+	"shared/types"
 )
 
 const (
@@ -44,11 +44,11 @@ func (chuck *BTChuckSensor) setHandlers() {
 	// Thumb stick axis (X, Y)
 	comms.BLE.SetNotificationHandler(ChuckAxisXUuid, func(buf []byte) {
 		chuck.Data.Sticks.AxisLeftX = binary.LittleEndian.Uint32(buf)
-		chuck.Sensor.EventChannel <- sensor_event.SensorEvent{Name: Name}
+		chuck.Sensor.EventChannel <- types.Event{Name: Name}
 	})
 	comms.BLE.SetNotificationHandler(ChuckAxisYUuid, func(buf []byte) {
 		chuck.Data.Sticks.AxisLeftY = binary.LittleEndian.Uint32(buf)
-		chuck.Sensor.EventChannel <- sensor_event.SensorEvent{Name: Name}
+		chuck.Sensor.EventChannel <- types.Event{Name: Name}
 	})
 
 	// Buttons: C, Z

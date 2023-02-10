@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"shared/comms"
 	"shared/sensors/sensor"
-	"shared/sensors/sensor_event"
+	"shared/types"
 )
 
 type WifiBikeSensor struct {
@@ -16,6 +16,6 @@ type WifiBikeSensor struct {
 func (bike *WifiBikeSensor) InitializeHandlers() {
 	comms.Handler.AddHandler(Name, func(data []byte) {
 		json.Unmarshal(data, &bike.Data)
-		bike.Sensor.EventChannel <- sensor_event.SensorEvent{Name: Name}
+		bike.Sensor.EventChannel <- types.Event{Name: Name}
 	})
 }

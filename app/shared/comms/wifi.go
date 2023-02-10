@@ -6,6 +6,7 @@ import (
 	"github.com/vmihailenco/msgpack/v5"
 	"net"
 	"shared/constants"
+	"shared/types"
 	"sync"
 	"time"
 )
@@ -38,16 +39,19 @@ type WiFiHandler struct {
 	heartbeatQueued int
 
 	handlers map[string]func(data []byte)
+
+	eventChannel chan<- types.Event
 }
 
 var (
 	Handler *WiFiHandler
 )
 
-func NewWifiHandler() *WiFiHandler {
+func NewWifiHandler(eventsChan chan<- types.Event) *WiFiHandler {
 	onceWifi.Do(func() {
 		Handler = &WiFiHandler{
-			handlers: make(map[string]func(data []byte)),
+			eventChannel: eventsChan,
+			handlers:     make(map[string]func(data []byte)),
 		}
 	})
 
@@ -85,6 +89,10 @@ func (wifi *WiFiHandler) InitializeWifi() {
 	go wifi.listen()
 }
 
+func (wifi *WiFiHandler) IsConnected() bool {
+	return wifi.connected
+}
+
 func (wifi *WiFiHandler) AddHandler(handlerName string, handlerFunc func(data []byte)) {
 	wifi.handlers[handlerName] = handlerFunc
 }
@@ -115,6 +123,9 @@ func (wifi *WiFiHandler) heartbeat() {
 			log("Heartbeat timed out, disconnecting from device...")
 			wifi.RemoveHandler(Heartbeat)
 			wifi.connected = false
+
+			// Reset sensors on wifi disconnect
+			wifi.eventChannel <- types.Event{Name: constants.EventReset}
 
 			// Reset heartbeats
 			wifi.heartbeatQueued = 0

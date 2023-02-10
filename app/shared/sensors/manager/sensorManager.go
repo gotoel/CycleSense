@@ -3,6 +3,7 @@ package manager
 import (
 	"shared/sensors/bike"
 	"shared/sensors/chuck"
+	"shared/types"
 	"sync"
 )
 
@@ -17,10 +18,15 @@ var (
 	Manager *SensorDataManager
 )
 
-func NewSensorDataManager() *SensorDataManager {
+func NewSensorDataManager(eventChannel chan<- types.Event) *SensorDataManager {
 	once.Do(func() {
 		Manager = &SensorDataManager{}
 	})
 
 	return Manager
+}
+
+func (sensorDataManager *SensorDataManager) ResetSensorData() {
+	sensorDataManager.Bike = &bike.Data{}
+	sensorDataManager.Chuck = &chuck.Data{}
 }

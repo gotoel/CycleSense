@@ -6,6 +6,8 @@ var lastRpm = 0;
 var button_c;
 var button_z;
 
+var connection_label;
+
 configureButtons();
 configureGauge();
 configureJoystick();
@@ -13,6 +15,8 @@ configureJoystick();
 function configureButtons() {
     button_c = document.getElementById("key_c");
     button_z = document.getElementById("key_z");
+
+    connection_label = document.getElementById("connection");
 }
 
 function configureJoystick() {
@@ -32,7 +36,13 @@ function configureGauge() {
 
 function updateStats() {
     fetch("/stats").then(response => response.json()).then(stats => {
-        //console.log(stats);
+        if(stats.connected) {
+            connection_label.innerText  = "Connected";
+            connection_label.style.color = "green";
+        } else {
+            connection_label.innerText  = "Disconnected. Connecting...";
+            connection_label.style.color = "#FF5F5FFF";
+        }
 
         if(stats.bike.rpm != lastRpm) {
             gauge.set(parseInt(stats.bike.rpm));

@@ -7,7 +7,7 @@ import (
 	"shared/sensors/bike"
 	"shared/sensors/chuck"
 	"shared/sensors/manager"
-	"shared/sensors/sensor_event"
+	"shared/types"
 	"shared/web"
 )
 
@@ -17,14 +17,14 @@ func main() {
 	go web.RunWebserver()
 
 	// Sensor events channel
-	sensorsEventChan := make(chan sensor_event.SensorEvent)
+	sensorsEventChan := make(chan types.Event)
 
 	// Initialize CycleSense virtual controller
 	input.NewSenseController(sensorsEventChan)
 	input.Input.Initialize()
 
 	// Initialize Sensor Manager singleton
-	manager.NewSensorDataManager()
+	manager.NewSensorDataManager(sensorsEventChan)
 
 	switch constants.DEVICE_CONNECTION_TYPE {
 	case constants.Bluetooth:
@@ -61,7 +61,7 @@ func main() {
 		manager.Manager.Bike = &wifibike.Data
 		manager.Manager.Chuck = &wifichuck.Data
 
-		comms.NewWifiHandler()
+		comms.NewWifiHandler(sensorsEventChan)
 		comms.Handler.InitializeWifi()
 
 		wifibike.InitializeHandlers()

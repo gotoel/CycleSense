@@ -2,19 +2,19 @@ package sensor
 
 import (
 	"shared/comms"
-	"shared/sensors/sensor_event"
+	"shared/types"
 )
 
 type Sensor struct {
 	SensorCommon
-	EventChannel chan<- sensor_event.SensorEvent
+	EventChannel chan<- types.Event
 }
 
 type SensorCommon interface {
-	SetEventsChannel(ch chan<- sensor_event.SensorEvent)
+	SetEventsChannel(ch chan<- types.Event)
 }
 
-func (sensor *Sensor) SetEventsChannel(ch chan<- sensor_event.SensorEvent) {
+func (sensor *Sensor) SetEventsChannel(ch chan<- types.Event) {
 	sensor.EventChannel = ch
 }
 

@@ -3,15 +3,16 @@ package input
 import (
 	"github.com/WesleiRamos/goxinput"
 	"github.com/micmonay/keybd_event"
+	"shared/constants"
 	"shared/sensors/manager"
-	"shared/sensors/sensor_event"
+	"shared/types"
 	"sync"
 )
 
 var once sync.Once
 
 type SenseController struct {
-	sensorEvents <-chan sensor_event.SensorEvent
+	sensorEvents <-chan types.Event
 
 	controller *goxinput.VirtualController
 	kb         keybd_event.KeyBonding
@@ -21,7 +22,7 @@ var (
 	Input *SenseController
 )
 
-func NewSenseController(ch <-chan sensor_event.SensorEvent) *SenseController {
+func NewSenseController(ch <-chan types.Event) *SenseController {
 	once.Do(func() {
 		Input = &SenseController{
 			sensorEvents: ch,
@@ -66,61 +67,64 @@ func (senseController *SenseController) Initialize() {
 func (senseController *SenseController) processEvents() {
 	go func() {
 		for event := range senseController.sensorEvents {
-			_ = event
-			//if manager.Manager.Bike.RPM > 40 {
-			senseAxisXLeft := (float32(manager.Manager.Chuck.Sticks.AxisLeftX) * (2) / 255) - 1
-			senseAxisYLeft := (float32(manager.Manager.Chuck.Sticks.AxisLeftY) * (2) / 255) - 1
-
-			senseAxisXRight := (float32(manager.Manager.Chuck.Sticks.AxisRightX) * (2) / 255) - 1
-			senseAxisYRight := (float32(manager.Manager.Chuck.Sticks.AxisRightY) * (2) / 255) - 1
-
-			//println(fmt.Sprintf("(%0.2f, %0.2f)", senseAxisX, senseAxisY))
-
-			senseController.controller.SetAxis(goxinput.AXIS_LX, senseAxisXLeft)
-			senseController.controller.SetAxis(goxinput.AXIS_LY, senseAxisYLeft)
-
-			senseController.controller.SetAxis(goxinput.AXIS_RX, senseAxisXRight)
-			senseController.controller.SetAxis(goxinput.AXIS_RY, senseAxisYRight)
-
-			senseController.controller.SetBtn(goxinput.BUTTON_A,
-				manager.Manager.Chuck.Buttons.ButtonA || manager.Manager.Chuck.Buttons.ButtonC)
-
-			senseController.controller.SetBtn(goxinput.BUTTON_B,
-				manager.Manager.Chuck.Buttons.ButtonB || manager.Manager.Chuck.Buttons.ButtonZ)
-
-			senseController.controller.SetBtn(goxinput.BUTTON_X, manager.Manager.Chuck.Buttons.ButtonX)
-			senseController.controller.SetBtn(goxinput.BUTTON_Y, manager.Manager.Chuck.Buttons.ButtonY)
-
-			if manager.Manager.Chuck.Triggers.TriggerLeft {
-				senseController.controller.SetTrigger(goxinput.BUTTON_LT, 1)
-			} else {
-				senseController.controller.SetTrigger(goxinput.BUTTON_LT, 0)
+			if event.Name == constants.EventReset {
+				manager.Manager.ResetSensorData()
 			}
 
-			if manager.Manager.Chuck.Triggers.TriggerRight {
-				senseController.controller.SetTrigger(goxinput.BUTTON_RT, 1)
-			} else {
-				senseController.controller.SetTrigger(goxinput.BUTTON_RT, 0)
+			if manager.Manager.Bike.RPM > 40 {
+				senseAxisXLeft := (float32(manager.Manager.Chuck.Sticks.AxisLeftX) * (2) / 255) - 1
+				senseAxisYLeft := (float32(manager.Manager.Chuck.Sticks.AxisLeftY) * (2) / 255) - 1
+
+				senseAxisXRight := (float32(manager.Manager.Chuck.Sticks.AxisRightX) * (2) / 255) - 1
+				senseAxisYRight := (float32(manager.Manager.Chuck.Sticks.AxisRightY) * (2) / 255) - 1
+
+				//println(fmt.Sprintf("(%0.2f, %0.2f)", senseAxisX, senseAxisY))
+
+				senseController.controller.SetAxis(goxinput.AXIS_LX, senseAxisXLeft)
+				senseController.controller.SetAxis(goxinput.AXIS_LY, senseAxisYLeft)
+
+				senseController.controller.SetAxis(goxinput.AXIS_RX, senseAxisXRight)
+				senseController.controller.SetAxis(goxinput.AXIS_RY, senseAxisYRight)
+
+				senseController.controller.SetBtn(goxinput.BUTTON_A,
+					manager.Manager.Chuck.Buttons.ButtonA || manager.Manager.Chuck.Buttons.ButtonC)
+
+				senseController.controller.SetBtn(goxinput.BUTTON_B,
+					manager.Manager.Chuck.Buttons.ButtonB || manager.Manager.Chuck.Buttons.ButtonZ)
+
+				senseController.controller.SetBtn(goxinput.BUTTON_X, manager.Manager.Chuck.Buttons.ButtonX)
+				senseController.controller.SetBtn(goxinput.BUTTON_Y, manager.Manager.Chuck.Buttons.ButtonY)
+
+				if manager.Manager.Chuck.Triggers.TriggerLeft {
+					senseController.controller.SetTrigger(goxinput.BUTTON_LT, 1)
+				} else {
+					senseController.controller.SetTrigger(goxinput.BUTTON_LT, 0)
+				}
+
+				if manager.Manager.Chuck.Triggers.TriggerRight {
+					senseController.controller.SetTrigger(goxinput.BUTTON_RT, 1)
+				} else {
+					senseController.controller.SetTrigger(goxinput.BUTTON_RT, 0)
+				}
+
+				senseController.controller.SetBtn(goxinput.BUTTON_LB, manager.Manager.Chuck.Triggers.TriggerZLeft)
+				senseController.controller.SetBtn(goxinput.BUTTON_RB, manager.Manager.Chuck.Triggers.TriggerZRight)
+
+				senseController.controller.SetBtn(goxinput.BUTTON_BACK, manager.Manager.Chuck.Buttons.ButtonMinus)
+				senseController.controller.SetBtn(goxinput.BUTTON_START, manager.Manager.Chuck.Buttons.ButtonPlus)
+
+				if manager.Manager.Chuck.Dpad.PadUp {
+					senseController.controller.SetDpad(goxinput.DPAD_UP)
+				} else if manager.Manager.Chuck.Dpad.PadDown {
+					senseController.controller.SetDpad(goxinput.DPAD_DOWN)
+				} else if manager.Manager.Chuck.Dpad.PadRight {
+					senseController.controller.SetDpad(goxinput.DPAD_RIGHT)
+				} else if manager.Manager.Chuck.Dpad.PadLeft {
+					senseController.controller.SetDpad(goxinput.DPAD_LEFT)
+				} else {
+					senseController.controller.SetDpad(goxinput.DPAD_OFF)
+				}
 			}
-
-			senseController.controller.SetBtn(goxinput.BUTTON_LB, manager.Manager.Chuck.Triggers.TriggerZLeft)
-			senseController.controller.SetBtn(goxinput.BUTTON_RB, manager.Manager.Chuck.Triggers.TriggerZRight)
-
-			senseController.controller.SetBtn(goxinput.BUTTON_BACK, manager.Manager.Chuck.Buttons.ButtonMinus)
-			senseController.controller.SetBtn(goxinput.BUTTON_START, manager.Manager.Chuck.Buttons.ButtonPlus)
-
-			if manager.Manager.Chuck.Dpad.PadUp {
-				senseController.controller.SetDpad(goxinput.DPAD_UP)
-			} else if manager.Manager.Chuck.Dpad.PadDown {
-				senseController.controller.SetDpad(goxinput.DPAD_DOWN)
-			} else if manager.Manager.Chuck.Dpad.PadRight {
-				senseController.controller.SetDpad(goxinput.DPAD_RIGHT)
-			} else if manager.Manager.Chuck.Dpad.PadLeft {
-				senseController.controller.SetDpad(goxinput.DPAD_LEFT)
-			} else {
-				senseController.controller.SetDpad(goxinput.DPAD_OFF)
-			}
-			//}
 		}
 	}()
 }

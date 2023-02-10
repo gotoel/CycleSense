@@ -3,6 +3,7 @@ package web
 import (
 	"encoding/json"
 	"net/http"
+	"shared/comms"
 	"shared/sensors/manager"
 )
 
@@ -22,5 +23,6 @@ func stats(w http.ResponseWriter, r *http.Request) {
 	result := make(map[string]interface{})
 	result["bike"] = manager.Manager.Bike
 	result["chuck"] = manager.Manager.Chuck
+	result["connected"] = comms.Handler.IsConnected()
 	json.NewEncoder(w).Encode(result)
 }

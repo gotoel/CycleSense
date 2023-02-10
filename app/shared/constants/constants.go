@@ -14,3 +14,5 @@ const (
 	USB         DeviceConnectionType = 2
 	HybridProxy DeviceConnectionType = 3
 )
+
+const EventReset = "Reset"

@@ -9,6 +9,8 @@ const char HEARTBEAT_MSG[] = "Heartbeat";
 
 void WifiSetup();
 void ProcessWifi();
+
+void SendMsgPack(const uint8_t* data, const size_t size);
 void WifiSendChuckData(Chuck chuck);
 void WifiProcessBike(BikeData bike);
 

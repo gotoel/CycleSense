@@ -58,7 +58,13 @@ void Bike::sendData() {
       BTProcessBike(this->data);
       break;
     case WIFI:
-      WifiProcessBike(this->data);
+      MsgPack::Packer packer;
+      packer.serialize(MsgPack::map_size_t(2), 
+        "type", "Bike",
+        "data", this->data
+      );
+      SendMsgPack(packer.data(), packer.size());
+      packer.clear();       
       break;
   }
 }
@@ -83,6 +89,6 @@ void Bike::pushSample(float rpm) {
 }
 
 void Bike::revCounterInterrupt()
-{  
+{ 
   rev++;
 }

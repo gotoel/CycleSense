@@ -63,9 +63,9 @@ function updateStats() {
             //console.log(joystickL[0]);
         }
 
-        button_c.className = (stats.chuck.button_c || stats.chuck.button_a) ?
+        button_c.className = (stats.chuck.buttons.button_c || stats.chuck.buttons.button_a) ?
             (stats.bike.rpm >= 40 ? "toggled" : "toggled-disabled") : "";
-        button_z.className = (stats.chuck.button_z  || stats.chuck.button_b) ?
+        button_z.className = (stats.chuck.buttons.button_z  || stats.chuck.buttons.button_b) ?
             (stats.bike.rpm >= 40 ? "toggled" : "toggled-disabled") : "";
         lastRpm = stats.bike.rpm;
     });

@@ -43,10 +43,10 @@ type Buttons struct {
 }
 
 type Triggers struct {
-	TriggerLeft   uint32 `json:"trigger_left" msgpack:"trigger_left"`
-	TriggerRight  uint32 `json:"trigger_right" msgpack:"trigger_right"`
-	TriggerZLeft  bool   `json:"trigger_z_left" msgpack:"trigger_z_left"`
-	TriggerZRight bool   `json:"trigger_z_right" msgpack:"trigger_z_right"`
+	TriggerLeft   bool `json:"trigger_left" msgpack:"trigger_left"`
+	TriggerRight  bool `json:"trigger_right" msgpack:"trigger_right"`
+	TriggerZLeft  bool `json:"trigger_z_left" msgpack:"trigger_z_left"`
+	TriggerZRight bool `json:"trigger_z_right" msgpack:"trigger_z_right"`
 }
 
 type Dpad struct {

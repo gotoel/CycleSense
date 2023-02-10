@@ -47,7 +47,7 @@ void loop() {
   }
 
   chuck.process();
-  bike.process();
+  bike.process(); 
 
   // DELAY FOR STABILITY, REMOVE FOR PRODUCTION
   delay(10);

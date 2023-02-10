@@ -1,6 +1,8 @@
 #ifndef BIKE_H
 #define BIKE_H
 
+#include <MsgPack.h>
+
 const int DECAY_START_INTERVAL_MS = 1000;
 const int DECAY_STEP_INTERVAL_MS = 500;
 
@@ -9,7 +11,8 @@ const float REV_THRESHOLD = 1.0; // # of rotations before updating RPM
 const int NUM_SAMPLES = 5; // # of calculated RPM samples to take average from
 
 struct BikeData {
-  float rpm;
+  MsgPack::str_t key_rpm {"rpm"}; float rpm;
+  MSGPACK_DEFINE_MAP(key_rpm, rpm);
 };
 
 class Bike {

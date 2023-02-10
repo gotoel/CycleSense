@@ -111,74 +111,74 @@ void BTSetup() {
 void BTProcessChuck(ChuckData lastData, ChuckData currentData) {
   // Update BLE values if they changed since last check
   // there's a writeValue and a writeValueLE for some reason...
-  if(lastData.acclX != currentData.acclX) 
-    chuckAcclX.writeValue(currentData.acclX);
+  if(lastData.accelerometer.acclX != currentData.accelerometer.acclX) 
+    chuckAcclX.writeValue(currentData.accelerometer.acclX);
 
-  if(lastData.acclY != currentData.acclY)  
-    chuckAcclY.writeValue(currentData.acclY);
+  if(lastData.accelerometer.acclY != currentData.accelerometer.acclY)  
+    chuckAcclY.writeValue(currentData.accelerometer.acclY);
 
-  if(lastData.acclZ != currentData.acclZ) 
-    chuckAcclZ.writeValue(currentData.acclZ);
+  if(lastData.accelerometer.acclZ != currentData.accelerometer.acclZ) 
+    chuckAcclZ.writeValue(currentData.accelerometer.acclZ);
 
-  if(lastData.axisLeftX != currentData.axisLeftX) {
-    chuckAxisXLeft.writeValue(currentData.axisLeftX);
+  if(lastData.sticks.axisLeftX != currentData.sticks.axisLeftX) {
+    chuckAxisXLeft.writeValue(currentData.sticks.axisLeftX);
   }
 
-  if(lastData.axisLeftY != currentData.axisLeftY) 
-    chuckAxisYLeft.writeValue(currentData.axisLeftY);
+  if(lastData.sticks.axisLeftY != currentData.sticks.axisLeftY) 
+    chuckAxisYLeft.writeValue(currentData.sticks.axisLeftY);
 
-  if(lastData.buttonC != currentData.buttonC) 
-    chuckKeyC.writeValue(currentData.buttonC);
+  if(lastData.buttons.buttonC != currentData.buttons.buttonC) 
+    chuckKeyC.writeValue(currentData.buttons.buttonC);
 
-  if(lastData.buttonZ != currentData.buttonZ) 
-    chuckKeyZ.writeValue(currentData.buttonZ);
+  if(lastData.buttons.buttonZ != currentData.buttons.buttonZ) 
+    chuckKeyZ.writeValue(currentData.buttons.buttonZ);
 
 
   // Wii Classic controller extensions
-  if(lastData.axisRightX != currentData.axisRightX) 
-    chuckAxisXRight.writeValue(currentData.axisRightX);
+  if(lastData.sticks.axisRightX != currentData.sticks.axisRightX) 
+    chuckAxisXRight.writeValue(currentData.sticks.axisRightX);
 
-  if(lastData.axisRightY != currentData.axisRightY) 
-    chuckAxisYRight.writeValue(currentData.axisRightY);
+  if(lastData.sticks.axisRightY != currentData.sticks.axisRightY) 
+    chuckAxisYRight.writeValue(currentData.sticks.axisRightY);
 
   // Buttons
-  if(lastData.buttonA != currentData.buttonA) 
-    chuckKeyA.writeValue(currentData.buttonA);
-  if(lastData.buttonB != currentData.buttonB) 
-    chuckKeyB.writeValue(currentData.buttonB);
-  if(lastData.buttonX != currentData.buttonX) 
-    chuckKeyX.writeValue(currentData.buttonX);
-  if(lastData.buttonY != currentData.buttonY) 
-    chuckKeyY.writeValue(currentData.buttonY);
+  if(lastData.buttons.buttonA != currentData.buttons.buttonA) 
+    chuckKeyA.writeValue(currentData.buttons.buttonA);
+  if(lastData.buttons.buttonB != currentData.buttons.buttonB) 
+    chuckKeyB.writeValue(currentData.buttons.buttonB);
+  if(lastData.buttons.buttonX != currentData.buttons.buttonX) 
+    chuckKeyX.writeValue(currentData.buttons.buttonX);
+  if(lastData.buttons.buttonY != currentData.buttons.buttonY) 
+    chuckKeyY.writeValue(currentData.buttons.buttonY);
 
   // Triggers
-  if(lastData.triggerLeft != currentData.triggerLeft) 
-    chuckTriggerLeft.writeValue(currentData.triggerLeft);
-  if(lastData.triggerRight != currentData.triggerRight) 
-    chuckTriggerRight.writeValue(currentData.triggerRight);
-  if(lastData.triggerZLeft != currentData.triggerZLeft) 
-    chuckTriggerZLeft.writeValue(currentData.triggerZLeft);
-  if(lastData.triggerZRight != currentData.triggerZRight) 
-    chuckTriggerZRight.writeValue(currentData.triggerZRight);
+  if(lastData.triggers.triggerLeft != currentData.triggers.triggerLeft) 
+    chuckTriggerLeft.writeValue(currentData.triggers.triggerLeft);
+  if(lastData.triggers.triggerRight != currentData.triggers.triggerRight) 
+    chuckTriggerRight.writeValue(currentData.triggers.triggerRight);
+  if(lastData.triggers.triggerZLeft != currentData.triggers.triggerZLeft) 
+    chuckTriggerZLeft.writeValue(currentData.triggers.triggerZLeft);
+  if(lastData.triggers.triggerZRight != currentData.triggers.triggerZRight) 
+    chuckTriggerZRight.writeValue(currentData.triggers.triggerZRight);
 
 
   // DPad
-  if(lastData.padDown != currentData.padDown) 
-    chuckPadDown.writeValue(currentData.padDown);
-  if(lastData.padUp != currentData.padUp) 
-    chuckPadUp.writeValue(currentData.padUp);
-  if(lastData.padRight != currentData.padRight) 
-    chuckPadRight.writeValue(currentData.padRight);
-  if(lastData.padLeft != currentData.padLeft) 
-    chuckPadLeft.writeValue(currentData.padLeft);
+  if(lastData.dpad.padDown != currentData.dpad.padDown) 
+    chuckPadDown.writeValue(currentData.dpad.padDown);
+  if(lastData.dpad.padUp != currentData.dpad.padUp) 
+    chuckPadUp.writeValue(currentData.dpad.padUp);
+  if(lastData.dpad.padRight != currentData.dpad.padRight) 
+    chuckPadRight.writeValue(currentData.dpad.padRight);
+  if(lastData.dpad.padLeft != currentData.dpad.padLeft) 
+    chuckPadLeft.writeValue(currentData.dpad.padLeft);
 
   // Menu/select/start buttons
-  if(lastData.buttonMinus != currentData.buttonMinus) 
-    chuckKeyMinus.writeValue(currentData.buttonMinus);
-  if(lastData.buttonHome != currentData.buttonHome) 
-    chuckKeyHome.writeValue(currentData.buttonHome);
-  if(lastData.buttonPlus != currentData.buttonPlus) 
-    chuckKeyPlus.writeValue(currentData.buttonPlus);
+  if(lastData.buttons.buttonMinus != currentData.buttons.buttonMinus) 
+    chuckKeyMinus.writeValue(currentData.buttons.buttonMinus);
+  if(lastData.buttons.buttonHome != currentData.buttons.buttonHome) 
+    chuckKeyHome.writeValue(currentData.buttons.buttonHome);
+  if(lastData.buttons.buttonPlus != currentData.buttons.buttonPlus) 
+    chuckKeyPlus.writeValue(currentData.buttons.buttonPlus);
 }
 
 void BTProcessBike(BikeData bike) {

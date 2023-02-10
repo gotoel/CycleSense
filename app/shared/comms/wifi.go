@@ -1,6 +1,7 @@
 package comms
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/vmihailenco/msgpack/v5"
 	"net"
@@ -36,7 +37,7 @@ type WiFiHandler struct {
 	connected       bool
 	heartbeatQueued int
 
-	handlers map[string]func(buf []byte)
+	handlers map[string]func(data []byte)
 }
 
 var (
@@ -46,7 +47,7 @@ var (
 func NewWifiHandler() *WiFiHandler {
 	onceWifi.Do(func() {
 		Handler = &WiFiHandler{
-			handlers: make(map[string]func(buf []byte)),
+			handlers: make(map[string]func(data []byte)),
 		}
 	})
 
@@ -70,11 +71,10 @@ func (wifi *WiFiHandler) InitializeWifi() {
 	// Register connection acknowledgement message handler
 	// this should probably be more secure...
 	wifi.AddHandler(ConnectAckHandler, func(data []byte) {
-		ack := ConnectAck{}
-		err = msgpack.Unmarshal(data, &ack)
+		msg := string(data)
 
 		if err == nil {
-			log(fmt.Sprintf("Connected to CycleSense device, msg from device: %s", ack.Msg))
+			log(fmt.Sprintf("Connected to CycleSense device, msg from device: %s", msg))
 			wifi.connected = true
 
 			go wifi.heartbeat()
@@ -154,14 +154,19 @@ func (wifi *WiFiHandler) sendData(data []byte) {
 	}
 }
 
-func (wifi *WiFiHandler) processUdpData(data []byte) {
+func (wifi *WiFiHandler) processUdpData(udpData []byte) {
 	dataMap := make(map[string]interface{})
-	err := msgpack.Unmarshal(data, &dataMap)
+	err := msgpack.Unmarshal(udpData, &dataMap)
 	if err == nil {
 		if typeName, ok := dataMap["type"]; ok {
 			formattedTypeName := fmt.Sprintf("%v", typeName)
 			if handlerFunc, ok2 := wifi.handlers[formattedTypeName]; ok2 {
-				handlerFunc([]byte(data))
+				if packetData, dataOk := dataMap["data"]; dataOk {
+					data, _ := json.Marshal(packetData)
+					handlerFunc(data)
+				} else {
+					handlerFunc([]byte{})
+				}
 			}
 		}
 	}

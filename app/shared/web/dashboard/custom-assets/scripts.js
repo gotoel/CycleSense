@@ -78,6 +78,9 @@ function updateStats() {
         button_z.className = (stats.chuck.buttons.button_z  || stats.chuck.buttons.button_b) ?
             (stats.bike.rpm >= 40 ? "toggled" : "toggled-disabled") : "";
         lastRpm = stats.bike.rpm;
+    }).catch((error) => {
+        connection_label.innerText  = "Disconnected. Connecting...";
+        connection_label.style.color = "#FF5F5FFF";
     });
 }
 

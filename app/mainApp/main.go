@@ -24,18 +24,23 @@ func main() {
 	input.Input.Initialize()
 
 	// Initialize Sensor Manager singleton
-	manager.NewSensorDataManager(sensorsEventChan)
+	manager.NewSensorDataManager()
+
+	manager.Manager.Bike = &bike.Data{}
+	manager.Manager.Chuck = &chuck.Data{}
 
 	switch constants.DEVICE_CONNECTION_TYPE {
 	case constants.Bluetooth:
-		btbike := bike.BTBikeSensor{}
-		btchuck := chuck.BTChuckSensor{}
+		// Set the data pointer on the sensors
+		btbike := bike.BTBikeSensor{
+			Data: manager.Manager.Bike,
+		}
+		btchuck := chuck.BTChuckSensor{
+			Data: manager.Manager.Chuck,
+		}
 
 		btbike.SetEventsChannel(sensorsEventChan)
 		btchuck.SetEventsChannel(sensorsEventChan)
-
-		manager.Manager.Bike = &btbike.Data
-		manager.Manager.Chuck = &btchuck.Data
 
 		// All used services/characteristics need to be
 		// added here for subscriptions.
@@ -52,14 +57,16 @@ func main() {
 		btchuck.Initialize()
 		break
 	case constants.WiFi:
-		wifibike := bike.WifiBikeSensor{}
-		wifichuck := chuck.WifiChuckSensor{}
+		// Set the data pointer on the sensors
+		wifibike := bike.WifiBikeSensor{
+			Data: manager.Manager.Bike,
+		}
+		wifichuck := chuck.WifiChuckSensor{
+			Data: manager.Manager.Chuck,
+		}
 
 		wifibike.SetEventsChannel(sensorsEventChan)
 		wifichuck.SetEventsChannel(sensorsEventChan)
-
-		manager.Manager.Bike = &wifibike.Data
-		manager.Manager.Chuck = &wifichuck.Data
 
 		comms.NewWifiHandler(sensorsEventChan)
 		comms.Handler.InitializeWifi()

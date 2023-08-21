@@ -10,7 +10,7 @@ import (
 type WifiBikeSensor struct {
 	sensor.Sensor
 	sensor.SensorWifi
-	Data Data
+	Data *Data
 }
 
 func (bike *WifiBikeSensor) InitializeHandlers() {

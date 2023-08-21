@@ -21,11 +21,10 @@ const (
 type BTChuckSensor struct {
 	sensor.Sensor
 	sensor.SensorBT
-	Data Data
+	Data *Data
 }
 
 func (chuck *BTChuckSensor) Initialize() {
-	chuck.Data = Data{}
 	chuck.setHandlers()
 }
 

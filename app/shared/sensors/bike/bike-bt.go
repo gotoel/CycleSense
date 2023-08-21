@@ -15,11 +15,10 @@ const (
 type BTBikeSensor struct {
 	sensor.Sensor
 	sensor.SensorBT
-	Data Data
+	Data *Data
 }
 
 func (bike *BTBikeSensor) Initialize() {
-	bike.Data = Data{}
 	bike.setHandlers()
 }
 

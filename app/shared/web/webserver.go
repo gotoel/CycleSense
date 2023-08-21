@@ -8,9 +8,7 @@ import (
 )
 
 func RunWebserver() {
-	http.Handle("/", http.FileServer(http.Dir("./shared/web/simple")))
-	fs := http.FileServer(http.Dir("./shared/web/dashboard"))
-	_ = fs
+	http.Handle("/", http.FileServer(http.Dir("./shared/web/dashboard")))
 	http.Handle("/dashboard", http.FileServer(http.Dir("./shared/web/dashboard")))
 	http.Handle("/dashboard/",
 		http.StripPrefix("/dashboard/", http.FileServer(http.Dir("./shared/web/dashboard"))))

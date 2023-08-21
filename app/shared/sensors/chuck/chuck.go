@@ -55,3 +55,36 @@ type Dpad struct {
 	PadRight bool `json:"pad_right" msgpack:"pad_right"`
 	PadLeft  bool `json:"pad_left" msgpack:"pad_left"`
 }
+
+func (data *Data) Reset() {
+	data.Info.ControllerType = 0
+	data.Accelerometer.AcclX = 0
+	data.Accelerometer.AcclY = 0
+	data.Accelerometer.AcclZ = 0
+
+	data.Sticks.AxisLeftX = 0
+	data.Sticks.AxisLeftY = 0
+	data.Sticks.AxisRightX = 0
+	data.Sticks.AxisRightY = 0
+
+	data.Buttons.ButtonC = false
+	data.Buttons.ButtonZ = false
+	data.Buttons.ButtonA = false
+	data.Buttons.ButtonB = false
+	data.Buttons.ButtonX = false
+	data.Buttons.ButtonY = false
+
+	data.Buttons.ButtonHome = false
+	data.Buttons.ButtonMinus = false
+	data.Buttons.ButtonPlus = false
+
+	data.Triggers.TriggerRight = false
+	data.Triggers.TriggerLeft = false
+	data.Triggers.TriggerZLeft = false
+	data.Triggers.TriggerZRight = false
+
+	data.Dpad.PadLeft = false
+	data.Dpad.PadRight = false
+	data.Dpad.PadDown = false
+	data.Dpad.PadUp = false
+}

@@ -10,7 +10,7 @@ import (
 type WifiChuckSensor struct {
 	sensor.Sensor
 	sensor.SensorWifi
-	Data Data
+	Data *Data
 }
 
 func (chuck *WifiChuckSensor) InitializeHandlers() {

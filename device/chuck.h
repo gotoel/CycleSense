@@ -45,7 +45,7 @@ struct ChuckButtons {
   MsgPack::str_t key_buttonPlus {"button_plus"}; bool buttonPlus;
   MSGPACK_DEFINE_MAP(key_buttonC, buttonC, key_buttonZ, buttonZ,
                      key_buttonA, buttonA, key_buttonB, buttonB,
-                     key_buttonC, buttonX, key_buttonC, buttonY,
+                     key_buttonX, buttonX, key_buttonY, buttonY,
                      key_buttonMinus, buttonMinus, key_buttonHome, buttonHome,
                      key_buttonPlus, buttonPlus);
 };

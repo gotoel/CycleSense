@@ -44,6 +44,8 @@ void WifiSetup() {
     Serial.println("Please upgrade the firmware");
   }
 
+  WiFi.setHostname(WIFI_HOSTNAME);
+
   // attempt to connect to Wifi network:
   while (status != WL_CONNECTED) {
     Serial.print("Attempting to connect to SSID: ");
